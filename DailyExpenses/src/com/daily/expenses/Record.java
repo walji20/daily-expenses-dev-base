@@ -1,15 +1,13 @@
-/**
- * 
- */
 package com.daily.expenses;
+
+/**
+ * @author Christian Zöller, Perry Wolf
+ *
+ */
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * @author No3x
- * 
- */
 public class Record {
 	private int id;
 	private String title;
