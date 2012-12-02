@@ -1,7 +1,10 @@
 package com.daily.expenses;
 
+import com.daily.expenses.R;
+
 import android.os.Build;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
@@ -10,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class ItemInsertActivity extends FragmentActivity {
-	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
