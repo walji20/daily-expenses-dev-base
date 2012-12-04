@@ -40,10 +40,6 @@
             android:name="com.daily.expenses.ItemInsertActivity"
             android:label="@string/title_activity_item_insert" >
         </activity>
-          <activity
-            android:name="com.daily.expenses.ItemInsertFragment"
-            android:label="@string/title_activity_item_insert" >
-        </activity>
     </application>
 
 </manifest>
