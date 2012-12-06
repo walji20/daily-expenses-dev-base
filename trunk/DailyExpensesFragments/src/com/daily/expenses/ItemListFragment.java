@@ -1,18 +1,22 @@
 package com.daily.expenses;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.app.LoaderManager;
 
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
 import com.daily.expenses.dummy.DummyContent;
 
@@ -25,8 +29,15 @@ import com.daily.expenses.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ItemListFragment extends ListFragment {
+public class ItemListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+	 // This is the Adapter being used to display the list's data.
+    SimpleCursorAdapter mAdapter;
+
+    // If non-null, this is the current filter the user has provided.
+    String mCurFilter;
+
+	String[] RECORDS_OVERVIEW_PROJECTION = new String[] {  RecordsTable.COLUMN_CATEGORY, RecordsTable.COLUMN_ID};
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
@@ -83,33 +94,23 @@ public class ItemListFragment extends ListFragment {
            layout = android.R.layout.simple_list_item_activated_1;
         }
         
+      
         // TODO: replace with a real list adapter.
-       setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
+       /*setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
                 getActivity(),
                 layout,
                 android.R.id.text1,
                 DummyContent.ITEMS));
 
-       
-       
-       /* String[] from = new String[] { RecordsTable.COLUMN_ID, RecordsTable.COLUMN_SUMMARY };
-     
-       int[] to = new int[] { android.R.id.text1, android.R.id.text2 };  
-       getSupportLoaderManager().initLoader(0, null, this);
-       adapter = new SimpleCursorAdapter(this, layout, null, from, to, 0);
-       setListAdapter(adapter);
        */
-        /* 
-         * Fields from the database (projection)
-        Must include the _id column for the adapter to work
-        String[] from = new String[] { RecordsTable.COLUMN_ID, RecordsTable.COLUMN_SUMMARY };
-        Fields on the UI to which we map
-        int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
-        
-        Fragment.getSupportLoaderManager().initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, layout, null, from, to, 0);
-        setListAdapter(adapter);
-       */ 
+       
+
+       int[] to = new int[] { android.R.id.text1, android.R.id.text2 };  
+       
+       getActivity().getSupportLoaderManager().initLoader(0, null, this); /* 0, null, (LoaderCallbacks<DummyContent>) this */
+       mAdapter = new SimpleCursorAdapter(this.getActivity(), layout, null, RECORDS_OVERVIEW_PROJECTION, to, 0);
+       setListAdapter(mAdapter);
+      
     }
 
     @Override
@@ -181,5 +182,40 @@ public class ItemListFragment extends ListFragment {
         }
 
         mActivatedPosition = position;
+    }
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // This is called when a new Loader needs to be created.  This
+        // sample only has one Loader, so we don't care about the ID.
+        // First, pick the base URI to use depending on whether we are
+        // currently filtering.
+        Uri baseUri;
+        if (mCurFilter != null) {
+            baseUri = Uri.withAppendedPath(RecordsContentProvider.CONTENT_FILTER_URI,
+                    Uri.encode(mCurFilter));
+        } else {
+            baseUri = RecordsContentProvider.CONTENT_URI;
+        }
+
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        String select = "((" + RecordsTable.COLUMN_CATEGORY + " NOTNULL) AND ("
+                + RecordsTable.COLUMN_CATEGORY + " != '' ))";
+        return new CursorLoader(getActivity(), baseUri,
+        		RECORDS_OVERVIEW_PROJECTION, select, null,
+        		RecordsTable.COLUMN_CATEGORY + " COLLATE LOCALIZED ASC");
+    }
+
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+        mAdapter.swapCursor(data);
+    }
+
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+        mAdapter.swapCursor(null);
     }
 }

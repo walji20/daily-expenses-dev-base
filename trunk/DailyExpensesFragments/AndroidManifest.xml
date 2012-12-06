@@ -4,6 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" >
+    </uses-permission>
+
     <uses-sdk
         android:minSdkVersion="7"
         android:targetSdkVersion="16" />
@@ -33,12 +36,16 @@
 
         <provider
             android:name="com.daily.expenses.contentprovider.RecordsContentProvider"
-            android:authorities="com.daily.expenses" >
+            android:authorities="com.daily.expenses.contentprovider" >
         </provider>
 
         <activity
             android:name="com.daily.expenses.ItemInsertActivity"
             android:label="@string/title_activity_item_insert" >
+        </activity>
+        <activity
+            android:name="com.daily.expenses.ContactsActivity"
+            android:label="@string/title_activity_contacts" >
         </activity>
     </application>
 

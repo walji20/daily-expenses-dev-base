@@ -44,7 +44,10 @@ public class ItemListActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+     
         
+        
+  
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
@@ -73,9 +76,11 @@ public class ItemListActivity extends FragmentActivity
 	  public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case R.id.insert:
-			Intent i = new Intent(this, ItemInsertActivity.class);
-			startActivityForResult(i, 1);
+			startActivityForResult(new Intent(this, ItemInsertActivity.class), 1);
 	      return true;
+	    case R.id.contacts:
+	    	startActivityForResult(new Intent(this, ContactsActivity.class), 2);
+	    	return true;
 	    }
 	    return super.onOptionsItemSelected(item);
 	  }
