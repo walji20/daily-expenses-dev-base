@@ -38,6 +38,10 @@ public class RecordsContentProvider extends ContentProvider {
   private static final String BASE_PATH = "todos";
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
       + "/" + BASE_PATH);
+  
+  /*TODO: implement filter. At the moment no filter is implemented */
+  public static final Uri CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY
+		  + "/" + BASE_PATH);
 
   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
       + "/todos";

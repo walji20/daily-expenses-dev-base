@@ -28,9 +28,26 @@ public class RecordsTable {
 	      + COLUMN_DESCRIPTION
 	      + " text not null" 
 	      + ");";
-
+	  
+	  // Database dummy items statement
+	  private static final String DATABASE_DUMMY_DATA_CATEGORY = "insert into " 
+	      + TABLE_TODO
+	      + "(" 
+	      + COLUMN_CATEGORY + ", " 
+	      + COLUMN_SUMMARY + ", " 
+	      + COLUMN_DESCRIPTION
+	      + ")"
+	      + " VALUES"
+	      + "(" 
+	      + "'TestCategory1', "
+	      + "'TestSummary1', "
+	      + "'TestDescription1'"
+	      + ");";
+	  
 	  public static void onCreate(SQLiteDatabase database) {
 	    database.execSQL(DATABASE_CREATE);
+	    database.execSQL(DATABASE_DUMMY_DATA_CATEGORY);
+	    Log.d(RecordsTable.class.getName(), "Created and filled database.");
 	  }
 
 	  public static void onUpgrade(SQLiteDatabase database, int oldVersion,

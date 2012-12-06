@@ -5,5 +5,11 @@
         android:title="Insert"
         android:showAsAction="always">
     </item>
+    
+     <item
+        android:id="@+id/contacts"
+        android:title="Contacts"
+        android:showAsAction="always">
+    </item>
 
 </menu>
