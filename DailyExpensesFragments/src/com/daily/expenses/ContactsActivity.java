@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class ContactsActivity extends ListActivity {
+public class ContactsActivity extends Activity {
 	
 	ListView listContacts;
 	
