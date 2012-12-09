@@ -88,32 +88,25 @@ public class ItemListFragment extends ListFragment implements LoaderManager.Load
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        /* Red[128225] Ensure compatibility for pre API 11 devices - list highlighting */
+        this.fillData();
+    }
+
+    public void fillData() {
+    	  /* Red[128225] Ensure compatibility for pre API 11 devices - list highlighting */
         int layout = android.R.layout.simple_list_item_1;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
            layout = android.R.layout.simple_list_item_activated_1;
         }
-        
-      
-        // TODO: replace with a real list adapter.
-       /*setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
-                getActivity(),
-                layout,
-                android.R.id.text1,
-                DummyContent.ITEMS));
-
-       */
-       
 
        int[] to = new int[] { android.R.id.text1, android.R.id.text2 };  
        
        getActivity().getSupportLoaderManager().initLoader(0, null, this); /* 0, null, (LoaderCallbacks<DummyContent>) this */
        mAdapter = new SimpleCursorAdapter(this.getActivity(), layout, null, RECORDS_OVERVIEW_PROJECTION, to, 0);
        setListAdapter(mAdapter);
-      
-    }
+		
+	}
 
-    @Override
+	@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
