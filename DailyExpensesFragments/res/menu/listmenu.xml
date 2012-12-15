@@ -2,14 +2,15 @@
 
     <item
         android:id="@+id/insert"
+        android:showAsAction="ifRoom|withText"
         android:title="Insert"
-        android:showAsAction="always">
+        android:icon="@drawable/content_new"
+    >
     </item>
-    
-     <item
+    <item
         android:id="@+id/contacts"
-        android:title="Contacts"
-        android:showAsAction="always">
+        android:showAsAction="ifRoom|withText"
+        android:title="Contacts">
     </item>
 
 </menu>
