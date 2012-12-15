@@ -5,31 +5,28 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.app.LoaderManager;
-
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
-import com.daily.expenses.dummy.DummyContent;
+import com.daily.expenses.dummy.RecordsContent;
 
 /**
  * A list fragment representing a list of Items. This fragment
  * also supports tablet devices by allowing list items to be given an
  * 'activated' state upon selection. This helps indicate which item is
- * currently being viewed in a {@link ItemDetailFragment}.
+ * currently being viewed in a {@link RecordDetailFragment}.
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ItemListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RecordListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	 // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -81,7 +78,7 @@ public class ItemListFragment extends ListFragment implements LoaderManager.Load
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemListFragment() {
+    public RecordListFragment() {
     }
 
     @Override
@@ -143,7 +140,7 @@ public class ItemListFragment extends ListFragment implements LoaderManager.Load
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(RecordsContent.ITEMS.get(position).id);
     }
 
     @Override
