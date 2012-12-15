@@ -1,28 +1,21 @@
 package com.daily.expenses;
 
-import com.daily.expenses.R;
-
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
-public class ItemInsertActivity extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+
+public class RecordInsertActivity extends SherlockFragmentActivity {
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_insert);
-        /* Red[128224] Ensure compatibility of pre API 11 devices - action bar */
-        // Show the Up button in the action bar.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-        	getActionBar().setDisplayHomeAsUpEnabled(true);
-    	}
+		setContentView(R.layout.activity_record_insert);
+        
+    	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+   
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
@@ -37,9 +30,9 @@ public class ItemInsertActivity extends FragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(ItemInsertFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ItemInsertFragment.ARG_ITEM_ID));
-            ItemInsertFragment fragment = new ItemInsertFragment();
+            arguments.putString(RecordInsertFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(RecordInsertFragment.ARG_ITEM_ID));
+            RecordInsertFragment fragment = new RecordInsertFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_insert_container, fragment)
@@ -50,7 +43,7 @@ public class ItemInsertActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_item_insert, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_record_insert, menu);
 		return true;
 	}
 }

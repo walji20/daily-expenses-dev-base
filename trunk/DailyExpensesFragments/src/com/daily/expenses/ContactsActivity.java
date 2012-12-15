@@ -1,19 +1,20 @@
 package com.daily.expenses;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.database.Cursor;
-import android.view.Menu;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class ContactsActivity extends Activity {
+public class ContactsActivity extends SherlockActivity {
 	
 	ListView listContacts;
 	
@@ -61,7 +62,7 @@ public class ContactsActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_contacts, menu);
+		this.getSupportMenuInflater().inflate(R.menu.activity_contacts, menu);
 		return true;
 	}
 

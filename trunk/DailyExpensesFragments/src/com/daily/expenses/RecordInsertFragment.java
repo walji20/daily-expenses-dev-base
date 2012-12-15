@@ -1,22 +1,20 @@
 package com.daily.expenses;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.daily.expenses.dummy.DummyContent;
-import com.daily.expenses.R;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.daily.expenses.dummy.RecordsContent;
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
+ * This fragment is either contained in a {@link RecordListActivity}
+ * in two-pane mode (on tablets) or a {@link RecordDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class RecordInsertFragment extends SherlockFragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -26,13 +24,13 @@ public class ItemDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private RecordsContent.Record mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemDetailFragment() {
+    public RecordInsertFragment() {
     }
 
     @Override
@@ -43,24 +41,24 @@ public class ItemDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_item_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_record_insert, container, false);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
+        /*if (mItem != null) {
         	if(mItem.text != null) {
         		((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.text);
         	} else {
         		((TextView) rootView.findViewById(R.id.item_detail)).setText("edit content by long press an item on the left.");
 			}
         }
-
+        */
         return rootView;
     }
 }
