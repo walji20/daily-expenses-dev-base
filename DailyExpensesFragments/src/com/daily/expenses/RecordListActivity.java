@@ -105,7 +105,6 @@ public class RecordListActivity extends SherlockFragmentActivity
             // fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
-            
             recordDetailFragment = new RecordDetailFragment();
             
             recordDetailFragment.setArguments(arguments);
