@@ -30,12 +30,12 @@ public class RecordsContentProvider extends ContentProvider {
   private RecordsDatabaseHelper database;
 
   // Used for the UriMacher
-  private static final int TODOS = 10;
-  private static final int TODO_ID = 20;
+  private static final int RECORDS = 10;
+  private static final int RECORD_ID = 20;
 
   private static final String AUTHORITY = "com.daily.expenses.contentprovider";
 
-  private static final String BASE_PATH = "todos";
+  private static final String BASE_PATH = "records";
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
       + "/" + BASE_PATH);
   
@@ -44,14 +44,14 @@ public class RecordsContentProvider extends ContentProvider {
 		  + "/" + BASE_PATH);
 
   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-      + "/todos";
+      + "/records";
   public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-      + "/todo";
+      + "/record";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH, TODOS);
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TODO_ID);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH, RECORDS);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", RECORD_ID);
   }
 
   @Override
@@ -75,9 +75,9 @@ public class RecordsContentProvider extends ContentProvider {
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
-    case TODOS:
+    case RECORDS:
       break;
-    case TODO_ID:
+    case RECORD_ID:
       // Adding the ID to the original query
       queryBuilder.appendWhere(RecordsTable.COLUMN_ID + "="
           + uri.getLastPathSegment());
@@ -107,7 +107,7 @@ public class RecordsContentProvider extends ContentProvider {
     int rowsDeleted = 0;
     long id = 0;
     switch (uriType) {
-    case TODOS:
+    case RECORDS:
       id = sqlDB.insert(RecordsTable.TABLE_TODO, null, values);
       break;
     default:
@@ -123,11 +123,11 @@ public class RecordsContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     switch (uriType) {
-    case TODOS:
+    case RECORDS:
       rowsDeleted = sqlDB.delete(RecordsTable.TABLE_TODO, selection,
           selectionArgs);
       break;
-    case TODO_ID:
+    case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
         rowsDeleted = sqlDB.delete(RecordsTable.TABLE_TODO,
@@ -155,13 +155,13 @@ public class RecordsContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsUpdated = 0;
     switch (uriType) {
-    case TODOS:
+    case RECORDS:
       rowsUpdated = sqlDB.update(RecordsTable.TABLE_TODO, 
           values, 
           selection,
           selectionArgs);
       break;
-    case TODO_ID:
+    case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
         rowsUpdated = sqlDB.update(RecordsTable.TABLE_TODO, 

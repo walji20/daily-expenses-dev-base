@@ -79,7 +79,7 @@ public class RecordListActivity extends SherlockFragmentActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.listmenu, menu);
+		inflater.inflate(R.menu.activity_record_list, menu);
 		return true;
 	}
 	
@@ -89,9 +89,6 @@ public class RecordListActivity extends SherlockFragmentActivity
 	    case R.id.insert:
 			startActivityForResult(new Intent(this, RecordInsertActivity.class), 1);
 	      return true;
-	    case R.id.contacts:
-	    	startActivityForResult(new Intent(this, ContactsActivity.class), 2);
-	    	return true;
 	    }
 	    return super.onOptionsItemSelected(item);
 	  }
