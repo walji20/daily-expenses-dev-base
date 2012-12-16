@@ -3,10 +3,12 @@ package com.daily.expenses;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
@@ -58,23 +60,23 @@ public class RecordDetailFragment extends SherlockFragment {
 
 			// Or passed from the other activity
 			if (extras != null) {
-//				todoUri = extras
-//						.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
-//
-//				String[] projection = { RecordsTable.COLUMN_SUMMARY,
-//						RecordsTable.COLUMN_DESCRIPTION,
-//						RecordsTable.COLUMN_CATEGORY };
-//				Cursor cursor = getActivity().getContentResolver()
-//						.query(todoUri, projection, null, null, null);
-//				if (cursor != null) {
-//					Toast.makeText(getActivity(), "cursor", Toast.LENGTH_LONG).show();
-////					cursor.moveToFirst();
-////					String category = cursor
-////							.getString(cursor
-////									.getColumnIndexOrThrow(RecordsTable.COLUMN_CATEGORY));
-//
-//				}
+				todoUri = extras.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
+				Log.d("todo", "todoUri: " + todoUri);
+				String[] projection = { RecordsTable.COLUMN_ID,
+										RecordsTable.COLUMN_DESCRIPTION,
+										RecordsTable.COLUMN_CATEGORY 
+										};
+				
+				Cursor cursor = getActivity().getContentResolver().query(todoUri, projection, null, null, null);
+				
+				if (cursor != null) {
+					Log.d("cursor ", "" + cursor);
+					cursor.moveToFirst();
+					String category = cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_CATEGORY));
 
+				}
+			  // Always close the cursor
+		      cursor.close();
 			}
 		}
 	}

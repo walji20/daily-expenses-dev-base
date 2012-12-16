@@ -4,13 +4,6 @@
         android:id="@+id/insert"
         android:showAsAction="ifRoom|withText"
         android:title="Insert"
-        android:icon="@drawable/content_new"
-    >
+        android:icon="@drawable/content_new">
     </item>
-    <item
-        android:id="@+id/contacts"
-        android:showAsAction="ifRoom|withText"
-        android:title="Contacts">
-    </item>
-
 </menu>
