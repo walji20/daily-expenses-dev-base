@@ -15,7 +15,6 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
-import com.daily.expenses.dummy.RecordsContent;
 
 /**
  * A list fragment representing a list of Items. This fragment
@@ -61,7 +60,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected(String id);
+        public void onItemSelected(long id);
     }
 
     /**
@@ -70,7 +69,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected(String id) {
+        public void onItemSelected(long id) {
         }
     };
 
@@ -140,7 +139,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(RecordsContent.ITEMS.get(position).id);
+        mCallbacks.onItemSelected(id);
     }
 
     @Override
