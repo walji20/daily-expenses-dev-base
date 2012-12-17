@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_record_detail_save"
+        android:icon="@drawable/content_save"
+        android:showAsAction="ifRoom|withText" 
+        android:title="@string/record_detail_save"/>
+</menu>

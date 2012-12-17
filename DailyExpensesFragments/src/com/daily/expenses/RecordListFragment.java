@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
 
@@ -33,7 +34,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
 
-	String[] RECORDS_OVERVIEW_PROJECTION = new String[] {  RecordsTable.COLUMN_CATEGORY, RecordsTable.COLUMN_ID};
+	String[] RECORDS_OVERVIEW_PROJECTION = new String[] {  RecordsTable.COLUMN_TITLE, RecordsTable.COLUMN_ID};
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
@@ -61,6 +62,8 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
          * Callback for when an item has been selected.
          */
         public void onItemSelected(long id);
+
+		boolean onContextItemSelected(MenuItem item);
     }
 
     /**
@@ -71,6 +74,12 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
         @Override
         public void onItemSelected(long id) {
         }
+
+		@Override
+		public boolean onContextItemSelected(MenuItem item) {
+			// TODO Auto-generated method stub
+			return false;
+		}
     };
 
     /**
@@ -188,11 +197,11 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        String select = "((" + RecordsTable.COLUMN_CATEGORY + " NOTNULL) AND ("
-                + RecordsTable.COLUMN_CATEGORY + " != '' ))";
+        String select = "((" + RecordsTable.COLUMN_TITLE + " NOTNULL) AND ("
+                + RecordsTable.COLUMN_TITLE + " != '' ))";
         return new CursorLoader(getActivity(), baseUri,
         		RECORDS_OVERVIEW_PROJECTION, select, null,
-        		RecordsTable.COLUMN_CATEGORY + " COLLATE LOCALIZED ASC");
+        		RecordsTable.COLUMN_TITLE + " COLLATE LOCALIZED ASC");
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

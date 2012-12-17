@@ -87,7 +87,7 @@ public class RecordListActivity extends SherlockFragmentActivity
 	  public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case R.id.insert:
-			startActivityForResult(new Intent(this, RecordInsertActivity.class), 1);
+			startActivityForResult(new Intent(this, RecordDetailActivity.class), 1);
 	      return true;
 	    }
 	    return super.onOptionsItemSelected(item);
@@ -126,21 +126,18 @@ public class RecordListActivity extends SherlockFragmentActivity
     }
     @Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		
 		menu.add(0, DELETE_ID, 0, "Delete");
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
-
+    @Override
 	public boolean onContextItemSelected(com.actionbarsherlock.view.MenuItem item) {
-	  Log.d("", "" + item.getItemId());
+	  Log.d("id", "" + item.getItemId());
 	  switch (item.getItemId()) {
 	  case DELETE_ID:
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-	        .getMenuInfo();
-	    Uri uri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/"
-	    + info.id);
-	getContentResolver().delete(uri, null, null);
-	Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("RecordListFragment");
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    Uri uri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + info.id);
+		getContentResolver().delete(uri, null, null);
+		Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
 	    ((RecordListFragment) currentFragment).fillData();
 	    Log.d("", "Delete selected");
 	    return true;

@@ -1,6 +1,8 @@
 package com.daily.expenses;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.R;
 
@@ -8,7 +10,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.widget.Toast;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -54,8 +58,15 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
                     .commit();
         }
     }
-
-    @Override
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.activity_record_detail, menu);
+		return true;
+	}
+	
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -68,6 +79,9 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
                 //
                 NavUtils.navigateUpTo(this, new Intent(this, RecordListActivity.class));
                 return true;
+                case R.id.menu_record_detail_save:
+                	Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
+            	    ((RecordDetailFragment) currentFragment).requestSave();
         }
         return super.onOptionsItemSelected(item);
     }
