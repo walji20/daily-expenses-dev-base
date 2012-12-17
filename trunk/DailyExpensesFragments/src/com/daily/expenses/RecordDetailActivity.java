@@ -43,8 +43,10 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(RecordDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(RecordDetailFragment.ARG_ITEM_ID));
+            /*arguments.putString(RecordDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(RecordDetailFragment.ARG_ITEM_ID));*/
+            
+            
             RecordDetailFragment fragment = new RecordDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

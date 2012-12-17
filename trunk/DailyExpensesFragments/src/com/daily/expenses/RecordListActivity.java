@@ -98,13 +98,16 @@ public class RecordListActivity extends SherlockFragmentActivity
      * indicating that the item with the given ID was selected.
      */
     @Override
-    public void onItemSelected(String id) {
+    public void onItemSelected(long id) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
+            //arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
+            Uri recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + id);
+            arguments.putParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE, recordUri);
+
             recordDetailFragment = new RecordDetailFragment();
             
             recordDetailFragment.setArguments(arguments);
@@ -116,7 +119,8 @@ public class RecordListActivity extends SherlockFragmentActivity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, RecordDetailActivity.class);
-            detailIntent.putExtra(RecordDetailFragment.ARG_ITEM_ID, id);
+            Uri recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + id);
+            detailIntent.putExtra(RecordsContentProvider.CONTENT_ITEM_TYPE, recordUri);
             startActivity(detailIntent);
         }
     }

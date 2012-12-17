@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
-import com.daily.expenses.dummy.RecordsContent;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -30,12 +29,12 @@ public class RecordDetailFragment extends SherlockFragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_ITEM_ID = "record_id";
 
     /**
      * The dummy content this fragment is presenting.
      */
-    private RecordsContent.Record mItem;
+    //private RecordsContent.Record mItem;
 
     private Spinner mCategory;
     private EditText mSummaryText;
@@ -53,12 +52,12 @@ public class RecordDetailFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	     
-		if (getArguments().containsKey(ARG_ITEM_ID)) {
+		if (getArguments().containsKey(RecordsContentProvider.CONTENT_ITEM_TYPE)) {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
-			mItem = RecordsContent.ITEM_MAP.get(getArguments().getString(
-					ARG_ITEM_ID));
+			/*mItem = RecordsContent.ITEM_MAP.get(getArguments().getParcelable(
+					RecordsContentProvider.CONTENT_ITEM_TYPE));*/
 		}
 	}
 
@@ -76,13 +75,12 @@ public class RecordDetailFragment extends SherlockFragment {
 		Bundle extras = this.getActivity().getIntent().getExtras();
 		
 		// Check from the saved Instance
-		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState .getParcelable(ARG_ITEM_ID);
+		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
 
 		// Or passed from the other activity
 		if (extras != null) {
-			 String itemId = (String) extras.getString(ARG_ITEM_ID);
-			 recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + itemId);
-			 fillData(recordUri);
+			recordUri = (Uri) extras.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
+			fillData(recordUri);
 		}  
 
         return rootView;
