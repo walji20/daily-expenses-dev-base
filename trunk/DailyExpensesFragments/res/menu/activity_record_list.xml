@@ -2,8 +2,9 @@
 
     <item
         android:id="@+id/insert"
+        android:icon="@drawable/content_new"
         android:showAsAction="ifRoom|withText"
-        android:title="Insert"
-        android:icon="@drawable/content_new">
+        android:title="Insert">
     </item>
+
 </menu>

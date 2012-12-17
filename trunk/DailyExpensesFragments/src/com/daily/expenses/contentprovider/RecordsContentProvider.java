@@ -71,7 +71,7 @@ public class RecordsContentProvider extends ContentProvider {
     checkColumns(projection);
 
     // Set the table
-    queryBuilder.setTables(RecordsTable.TABLE_TODO);
+    queryBuilder.setTables(RecordsTable.TABLE_RECORD);
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
@@ -108,7 +108,7 @@ public class RecordsContentProvider extends ContentProvider {
     long id = 0;
     switch (uriType) {
     case RECORDS:
-      id = sqlDB.insert(RecordsTable.TABLE_TODO, null, values);
+      id = sqlDB.insert(RecordsTable.TABLE_RECORD, null, values);
       break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -124,17 +124,17 @@ public class RecordsContentProvider extends ContentProvider {
     int rowsDeleted = 0;
     switch (uriType) {
     case RECORDS:
-      rowsDeleted = sqlDB.delete(RecordsTable.TABLE_TODO, selection,
+      rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD, selection,
           selectionArgs);
       break;
     case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_TODO,
+        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD,
         		RecordsTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_TODO,
+        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD,
         		RecordsTable.COLUMN_ID + "=" + id 
             + " and " + selection,
             selectionArgs);
@@ -156,7 +156,7 @@ public class RecordsContentProvider extends ContentProvider {
     int rowsUpdated = 0;
     switch (uriType) {
     case RECORDS:
-      rowsUpdated = sqlDB.update(RecordsTable.TABLE_TODO, 
+      rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
           values, 
           selection,
           selectionArgs);
@@ -164,12 +164,12 @@ public class RecordsContentProvider extends ContentProvider {
     case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(RecordsTable.TABLE_TODO, 
+        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
             values,
             RecordsTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsUpdated = sqlDB.update(RecordsTable.TABLE_TODO, 
+        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
             values,
             RecordsTable.COLUMN_ID + "=" + id 
             + " and " 
@@ -185,9 +185,7 @@ public class RecordsContentProvider extends ContentProvider {
   }
 
   private void checkColumns(String[] projection) {
-    String[] available = { RecordsTable.COLUMN_CATEGORY,
-    		RecordsTable.COLUMN_SUMMARY, RecordsTable.COLUMN_DESCRIPTION,
-        RecordsTable.COLUMN_ID };
+    String[] available = RecordsTable.TABLE_RECORD_AVAILABLE_COLUMS;
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
       HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
