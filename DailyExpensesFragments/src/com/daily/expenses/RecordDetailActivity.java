@@ -5,11 +5,14 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.R;
+import com.daily.expenses.contentprovider.RecordsContentProvider;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.widget.Toast;
@@ -47,14 +50,21 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            /*arguments.putString(RecordDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(RecordDetailFragment.ARG_ITEM_ID));*/
             
-            
+            //distinguish between detail record and new record
+            Parcelable item = getIntent().getParcelableExtra(RecordsContentProvider.CONTENT_ITEM_TYPE);
+            if(item != null) {
+            	// detail record	
+            	arguments.putParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE, item);
+            } else {
+            	// new record - dont pass an argument
+            	arguments = null;
+            }
+        	
             RecordDetailFragment fragment = new RecordDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.item_detail_container, fragment)
+                    .add(R.id.record_detail_container, fragment)
                     .commit();
         }
     }
@@ -80,8 +90,8 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
                 NavUtils.navigateUpTo(this, new Intent(this, RecordListActivity.class));
                 return true;
                 case R.id.menu_record_detail_save:
-                	Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.item_detail_container);
-            	    ((RecordDetailFragment) currentFragment).requestSave();
+                	Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.record_detail_container);
+			((RecordDetailFragment) currentFragment).requestSave();
         }
         return super.onOptionsItemSelected(item);
     }

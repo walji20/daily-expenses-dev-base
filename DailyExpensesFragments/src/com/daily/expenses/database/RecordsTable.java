@@ -11,18 +11,18 @@ import android.util.Log;
  */
 public class RecordsTable {
 
-	  // Database table
-	  public static final String TABLE_RECORD = "record";
-	  public static final String COLUMN_ID = "_id";
-	  public static final String COLUMN_TITLE = "title";
-	  public static final String COLUMN_DESCRIPTION = "description";
-	  public static final String COLUMN_AMOUNT = "amount";
-	  public static final String COLUMN_BOOKING_TYPE = "bookingType";
-	  public static final String COLUMN_PERIOD_TYPE = "periodType";
-	  public static final String COLUMN_CATEGORY_TYPE = "categoryType";
-	  public static final String COLUMN_UNIX_DATE = "unixDate";
-	  public static final String COLUMN_PAY_STATE = "payState";
-	  public static final String[] TABLE_RECORD_AVAILABLE_COLUMS = { 
+	// Database table
+	public static final String TABLE_RECORD = "record";
+	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_TITLE = "title";
+	public static final String COLUMN_DESCRIPTION = "description";
+	public static final String COLUMN_AMOUNT = "amount";
+	public static final String COLUMN_BOOKING_TYPE = "bookingType";
+	public static final String COLUMN_PERIOD_TYPE = "periodType";
+	public static final String COLUMN_CATEGORY_TYPE = "categoryType";
+	public static final String COLUMN_UNIX_DATE = "unixDate";
+	public static final String COLUMN_PAY_STATE = "payState";
+    public static final String[] TABLE_RECORD_AVAILABLE_COLUMS = { 
 		  COLUMN_ID, 
 		  COLUMN_TITLE, 
 		  COLUMN_DESCRIPTION, 
@@ -75,18 +75,16 @@ public class RecordsTable {
 	      + "'1'"
 	      + ");";
 	  
-	  public static void onCreate(SQLiteDatabase database) {
-	    database.execSQL(DATABASE_CREATE);
-	    database.execSQL(DATABASE_DUMMY_DATA_RECORDS);
-	    Log.d(RecordsTable.class.getName(), "Created and filled database.");
-	  }
+	public static void onCreate(SQLiteDatabase database) {
+		database.execSQL(DATABASE_CREATE);
+		database.execSQL(DATABASE_DUMMY_DATA_RECORDS);
+		database.execSQL(DATABASE_DUMMY_DATA_RECORDS);
+		Log.d(RecordsTable.class.getName(), "Created and filled database.");
+	}
 
-	  public static void onUpgrade(SQLiteDatabase database, int oldVersion,
-	      int newVersion) {
-	    Log.w(RecordsTable.class.getName(), "Upgrading database from version "
-	        + oldVersion + " to " + newVersion
-	        + ", which will destroy all old data");
-	    database.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORD);
-	    onCreate(database);
-	  }
+	public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+		Log.w(RecordsTable.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+		database.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORD);
+		onCreate(database);
+	}
 	} 
