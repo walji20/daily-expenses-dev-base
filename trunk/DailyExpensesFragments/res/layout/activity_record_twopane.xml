@@ -5,9 +5,9 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:orientation="horizontal"
-    android:showDividers="middle"
-    tools:context=".ItemListActivity" >
- <!-- android:divider="?android:attr/dividerHorizontal"  -->
+    tools:context=".RecordListActivity" >
+
+    <!-- android:divider="?android:attr/dividerHorizontal" -->
     <!--
     This layout is a two-pane layout for the Items
     master/detail flow. See res/values-large/refs.xml and
@@ -17,16 +17,25 @@
 
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+
     -->
 
     <fragment
-        android:id="@+id/item_list"
+        android:id="@+id/record_list"
         android:name="com.daily.expenses.RecordListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         tools:layout="@layout/list_content" />
 
+
+	  <View          
+      android:id="@+id/record_divider"
+      android:layout_width="1dp" 
+      android:layout_height="match_parent" 
+      android:background="@android:color/darker_gray" /> 
+
+	
     <FrameLayout
         android:id="@+id/record_detail_container"
         android:layout_width="0dp"
