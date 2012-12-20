@@ -65,6 +65,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 
 		ListView list = (ListView) findViewById(android.R.id.list);
 		this.registerForContextMenu(list);
+		list.setOnCreateContextMenuListener(this);
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
 

@@ -34,7 +34,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
 
-	String[] RECORDS_OVERVIEW_PROJECTION = new String[] {  RecordsTable.COLUMN_TITLE, RecordsTable.COLUMN_ID};
+	String[] RECORDS_OVERVIEW_PROJECTION = new String[] {  RecordsTable.TABLE_RECORDS_COLUMN_TITLE, RecordsTable.TABLE_RECORDS_COLUMN_ID};
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
@@ -92,7 +92,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+       
         this.fillData();
     }
 
@@ -197,11 +197,11 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        String select = "((" + RecordsTable.COLUMN_TITLE + " NOTNULL) AND ("
-                + RecordsTable.COLUMN_TITLE + " != '' ))";
+        String select = "((" + RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " NOTNULL) AND ("
+                + RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " != '' ))";
         return new CursorLoader(getActivity(), baseUri,
         		RECORDS_OVERVIEW_PROJECTION, select, null,
-        		RecordsTable.COLUMN_TITLE + " COLLATE LOCALIZED ASC");
+        		RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
