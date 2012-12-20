@@ -1,10 +1,6 @@
 package com.daily.expenses;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
@@ -12,14 +8,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.util.TimeUtils;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DateSorter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
