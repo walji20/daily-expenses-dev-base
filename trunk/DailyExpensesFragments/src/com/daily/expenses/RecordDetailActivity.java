@@ -1,21 +1,17 @@
 package com.daily.expenses;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.daily.expenses.R;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
-import android.widget.Toast;
 
 /**
  * An activity representing a single Item detail screen. This
