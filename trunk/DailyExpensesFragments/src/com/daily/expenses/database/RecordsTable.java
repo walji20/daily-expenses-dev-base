@@ -12,56 +12,56 @@ import android.util.Log;
 public class RecordsTable {
 
 	// Database table
-	public static final String TABLE_RECORD = "record";
-	public static final String COLUMN_ID = "_id";
-	public static final String COLUMN_TITLE = "title";
-	public static final String COLUMN_DESCRIPTION = "description";
-	public static final String COLUMN_AMOUNT = "amount";
-	public static final String COLUMN_BOOKING_TYPE = "bookingType";
-	public static final String COLUMN_PERIOD_TYPE = "periodType";
-	public static final String COLUMN_CATEGORY_TYPE = "categoryType";
-	public static final String COLUMN_UNIX_DATE = "unixDate";
-	public static final String COLUMN_PAY_STATE = "payState";
-    public static final String[] TABLE_RECORD_AVAILABLE_COLUMS = { 
-		  COLUMN_ID, 
-		  COLUMN_TITLE, 
-		  COLUMN_DESCRIPTION, 
-		  COLUMN_AMOUNT, 
-		  COLUMN_BOOKING_TYPE, 
-		  COLUMN_PERIOD_TYPE, 
-		  COLUMN_CATEGORY_TYPE, 
-		  COLUMN_UNIX_DATE, 
-		  COLUMN_PAY_STATE
+	public static final String TABLE_RECORDS = "record";
+	public static final String TABLE_RECORDS_COLUMN_ID = "_id";
+	public static final String TABLE_RECORDS_COLUMN_TITLE = "title";
+	public static final String TABLE_RECORDS_COLUMN_DESCRIPTION = "description";
+	public static final String TABLE_RECORDS_COLUMN_AMOUNT = "amount";
+	public static final String TABLE_RECORDS_COLUMN_BOOKING_TYPE = "bookingType";
+	public static final String TABLE_RECORDS_COLUMN_PERIOD_TYPE = "periodType";
+	public static final String TABLE_RECORDS_COLUMN_CATEGORY_TYPE = "categoryType";
+	public static final String TABLE_RECORDS_COLUMN_UNIX_DATE = "unixDate";
+	public static final String TABLE_RECORDS_COLUMN_PAY_STATE = "payState";
+    public static final String[] TABLE_RECORDS_AVAILABLE_COLUMS = { 
+		  TABLE_RECORDS_COLUMN_ID, 
+		  TABLE_RECORDS_COLUMN_TITLE, 
+		  TABLE_RECORDS_COLUMN_DESCRIPTION, 
+		  TABLE_RECORDS_COLUMN_AMOUNT, 
+		  TABLE_RECORDS_COLUMN_BOOKING_TYPE, 
+		  TABLE_RECORDS_COLUMN_PERIOD_TYPE, 
+		  TABLE_RECORDS_COLUMN_CATEGORY_TYPE, 
+		  TABLE_RECORDS_COLUMN_UNIX_DATE, 
+		  TABLE_RECORDS_COLUMN_PAY_STATE
 	 };
 	  
 
 	  // Database creation SQL statement
 	  private static final String DATABASE_CREATE = "CREATE TABLE " 
-	      + TABLE_RECORD
+	      + TABLE_RECORDS
 	      + "(" 
-	      + COLUMN_ID + " integer primary key autoincrement, " 
-	      + COLUMN_TITLE + " text not null, " 
-	      + COLUMN_DESCRIPTION + " text not null, " 
-	      + COLUMN_AMOUNT + " double not null, " 
-	      + COLUMN_BOOKING_TYPE + " int not null, " 
-	      + COLUMN_PERIOD_TYPE + " int not null, " 
-	      + COLUMN_CATEGORY_TYPE + " int not null, " 
-	      + COLUMN_UNIX_DATE + " long not null, " 
-	      + COLUMN_PAY_STATE + " int not null" 
+	      + TABLE_RECORDS_COLUMN_ID + " integer primary key autoincrement, " 
+	      + TABLE_RECORDS_COLUMN_TITLE + " text not null, " 
+	      + TABLE_RECORDS_COLUMN_DESCRIPTION + " text not null, " 
+	      + TABLE_RECORDS_COLUMN_AMOUNT + " double not null, " 
+	      + TABLE_RECORDS_COLUMN_BOOKING_TYPE + " int not null, " 
+	      + TABLE_RECORDS_COLUMN_PERIOD_TYPE + " int not null, " 
+	      + TABLE_RECORDS_COLUMN_CATEGORY_TYPE + " int not null, " 
+	      + TABLE_RECORDS_COLUMN_UNIX_DATE + " long not null, " 
+	      + TABLE_RECORDS_COLUMN_PAY_STATE + " int not null" 
 	      + ");";
 	  
 	  // Database dummy items statement
-	  private static final String DATABASE_DUMMY_DATA_RECORDS = "insert into " 
-	      + TABLE_RECORD
+	  private static final String TABLE_RECORDS_DUMMY_DATA = "insert into " 
+	      + TABLE_RECORDS
 	      + "(" 
-	      + COLUMN_TITLE + ", " 
-	      + COLUMN_DESCRIPTION + ", " 
-	      + COLUMN_AMOUNT + ", " 
-	      + COLUMN_BOOKING_TYPE + ", " 
-	      + COLUMN_PERIOD_TYPE + ", " 
-	      + COLUMN_CATEGORY_TYPE + ", " 
-	      + COLUMN_UNIX_DATE + ", " 
-	      + COLUMN_PAY_STATE
+	      + TABLE_RECORDS_COLUMN_TITLE + ", " 
+	      + TABLE_RECORDS_COLUMN_DESCRIPTION + ", " 
+	      + TABLE_RECORDS_COLUMN_AMOUNT + ", " 
+	      + TABLE_RECORDS_COLUMN_BOOKING_TYPE + ", " 
+	      + TABLE_RECORDS_COLUMN_PERIOD_TYPE + ", " 
+	      + TABLE_RECORDS_COLUMN_CATEGORY_TYPE + ", " 
+	      + TABLE_RECORDS_COLUMN_UNIX_DATE + ", " 
+	      + TABLE_RECORDS_COLUMN_PAY_STATE
 	      + ")"
 	      + " VALUES"
 	      + "(" 
@@ -77,14 +77,14 @@ public class RecordsTable {
 	  
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
-		database.execSQL(DATABASE_DUMMY_DATA_RECORDS);
-		database.execSQL(DATABASE_DUMMY_DATA_RECORDS);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
 		Log.d(RecordsTable.class.getName(), "Created and filled database.");
 	}
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
 		Log.w(RecordsTable.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
-		database.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORD);
+		database.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
 		onCreate(database);
 	}
-	} 
+} 

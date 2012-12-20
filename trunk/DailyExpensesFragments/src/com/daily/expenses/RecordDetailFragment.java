@@ -1,15 +1,25 @@
 package com.daily.expenses;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.util.TimeUtils;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DateSorter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -120,40 +130,54 @@ public class RecordDetailFragment extends SherlockFragment {
 
 	private void fillData(Uri uri) {
 		Log.d("todo", "todoUri: " + recordUri);
-		String[] projection = { RecordsTable.COLUMN_ID, RecordsTable.COLUMN_TITLE, RecordsTable.COLUMN_DESCRIPTION, RecordsTable.COLUMN_AMOUNT,
-				RecordsTable.COLUMN_BOOKING_TYPE, RecordsTable.COLUMN_PERIOD_TYPE, RecordsTable.COLUMN_CATEGORY_TYPE, RecordsTable.COLUMN_UNIX_DATE,
-				RecordsTable.COLUMN_PAY_STATE, };
+		String[] projection = { RecordsTable.TABLE_RECORDS_COLUMN_ID, RecordsTable.TABLE_RECORDS_COLUMN_TITLE, RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION, RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT,
+				RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE,
+				RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE, };
 
 		Cursor cursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
 
-		if (cursor != null) {
-			cursor.moveToFirst();
+		if (cursor != null)
+			try {
+				{
+					cursor.moveToFirst();
 
-			/*
-			 * String category =
-			 * cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable
-			 * .COLUMN_CATEGORY));
-			 * 
-			 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
-			 * (String) mCategory.getItemAtPosition(i); if
-			 * (s.equalsIgnoreCase(category)) { mCategory.setSelection(i); } }
-			 */
+					/*
+					 * String category =
+					 * cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable
+					 * .COLUMN_CATEGORY));
+					 * 
+					 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
+					 * (String) mCategory.getItemAtPosition(i); if
+					 * (s.equalsIgnoreCase(category)) { mCategory.setSelection(i); } }
+					 */
 
-			String strDateTime = mUnixDate.getYear() + "-" + (mUnixDate.getMonth() + 1) + "-" + mUnixDate.getDayOfMonth();
-			Log.d("strDateTime", strDateTime);
-			mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_TITLE)));
-			mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_DESCRIPTION)));
-			mAmountText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_AMOUNT)));
-			mBookingTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_BOOKING_TYPE)));
-			mPeriodTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_PERIOD_TYPE)));
+					/* Convert unix time stamp to mills */
+					long unixTs = cursor.getInt(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE));
+					Calendar c = Calendar.getInstance();
+					long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
+					c.setTimeInMillis( unixTms );
+					
+					Log.d("Timestamp from DatePicker: ", "" + unixTs );
+					Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
+					mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+					
+					mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_TITLE)));
+					mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION)));
+					mAmountText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT)));
+					mBookingTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
+					mPeriodTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
 
-			if (cursor.getInt(cursor.getColumnIndexOrThrow(RecordsTable.COLUMN_PAY_STATE)) == 1) {
-				mPayStateCheck.setChecked(true);
-			} else {
-				mPayStateCheck.setChecked(false);
+					if (cursor.getInt(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
+						mPayStateCheck.setChecked(true);
+					} else {
+						mPayStateCheck.setChecked(false);
+					}
+
+				}
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
-		}
 		// Always close the cursor
 		cursor.close();
 	}
@@ -166,9 +190,23 @@ public class RecordDetailFragment extends SherlockFragment {
 		String amountText = mAmountText.getText().toString();
 		String bookingTypeText = mBookingTypeText.getText().toString();
 		String periodTypeText = mPeriodTypeText.getText().toString();
-
+		int unixDateYear = mUnixDate.getYear();
+		int unixDateMonth = mUnixDate.getMonth();
+		int unixDateDay = mUnixDate.getDayOfMonth();
+		
+		
 		// Long unixDate = mUnixDate.get
+		
 
+		
+		Calendar c = Calendar.getInstance();
+		c.set(unixDateYear, unixDateMonth, unixDateDay);
+		// get ms from calendar
+		long unixTms = c.getTimeInMillis();
+		// convert ms to s
+		long unixTs = TimeUnit.MILLISECONDS.toSeconds(unixTms);
+		Log.d("Timestamp from DatePicker: ", "" + unixTs);
+		
 		boolean payState;
 		if (mPayStateCheck.isChecked()) {
 			payState = true;
@@ -178,15 +216,14 @@ public class RecordDetailFragment extends SherlockFragment {
 
 		ContentValues values = new ContentValues();
 		// TODO: do it :D
-		values.put(RecordsTable.COLUMN_TITLE, titleText);
-		values.put(RecordsTable.COLUMN_DESCRIPTION, descriptionText);
-		values.put(RecordsTable.COLUMN_AMOUNT, amountText);
-		values.put(RecordsTable.COLUMN_BOOKING_TYPE, bookingTypeText);
-		values.put(RecordsTable.COLUMN_PERIOD_TYPE, periodTypeText);
-		values.put(RecordsTable.COLUMN_CATEGORY_TYPE, category);
-		/* TODO: replace by user input */
-		values.put(RecordsTable.COLUMN_UNIX_DATE, 1355765617);
-		values.put(RecordsTable.COLUMN_PAY_STATE, payState);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_TITLE, titleText);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION, descriptionText);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT, amountText);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingTypeText);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE, periodTypeText);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, category);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE, unixTs);
+		values.put(RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE, payState);
 
 		if (recordUri == null) {
 			// New record

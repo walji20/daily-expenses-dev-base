@@ -36,17 +36,13 @@ public class RecordsContentProvider extends ContentProvider {
   private static final String AUTHORITY = "com.daily.expenses.contentprovider";
 
   private static final String BASE_PATH = "records";
-  public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-      + "/" + BASE_PATH);
   
+  public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
   /*TODO: implement filter. At the moment no filter is implemented */
-  public static final Uri CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY
-		  + "/" + BASE_PATH);
+  public static final Uri CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
 
-  public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-      + "/records";
-  public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-      + "/record";
+  public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/records";
+  public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/record";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
@@ -71,7 +67,7 @@ public class RecordsContentProvider extends ContentProvider {
     checkColumns(projection);
 
     // Set the table
-    queryBuilder.setTables(RecordsTable.TABLE_RECORD);
+    queryBuilder.setTables(RecordsTable.TABLE_RECORDS);
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
@@ -79,7 +75,7 @@ public class RecordsContentProvider extends ContentProvider {
       break;
     case RECORD_ID:
       // Adding the ID to the original query
-      queryBuilder.appendWhere(RecordsTable.COLUMN_ID + "="
+      queryBuilder.appendWhere(RecordsTable.TABLE_RECORDS_COLUMN_ID + "="
           + uri.getLastPathSegment());
       break;
     default:
@@ -108,7 +104,7 @@ public class RecordsContentProvider extends ContentProvider {
     long id = 0;
     switch (uriType) {
     case RECORDS:
-      id = sqlDB.insert(RecordsTable.TABLE_RECORD, null, values);
+      id = sqlDB.insert(RecordsTable.TABLE_RECORDS, null, values);
       break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -124,18 +120,18 @@ public class RecordsContentProvider extends ContentProvider {
     int rowsDeleted = 0;
     switch (uriType) {
     case RECORDS:
-      rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD, selection,
+      rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORDS, selection,
           selectionArgs);
       break;
     case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD,
-        		RecordsTable.COLUMN_ID + "=" + id, 
+        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORDS,
+        		RecordsTable.TABLE_RECORDS_COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORD,
-        		RecordsTable.COLUMN_ID + "=" + id 
+        rowsDeleted = sqlDB.delete(RecordsTable.TABLE_RECORDS,
+        		RecordsTable.TABLE_RECORDS_COLUMN_ID + "=" + id 
             + " and " + selection,
             selectionArgs);
       }
@@ -156,7 +152,7 @@ public class RecordsContentProvider extends ContentProvider {
     int rowsUpdated = 0;
     switch (uriType) {
     case RECORDS:
-      rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
+      rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORDS, 
           values, 
           selection,
           selectionArgs);
@@ -164,14 +160,14 @@ public class RecordsContentProvider extends ContentProvider {
     case RECORD_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
+        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORDS, 
             values,
-            RecordsTable.COLUMN_ID + "=" + id, 
+            RecordsTable.TABLE_RECORDS_COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORD, 
+        rowsUpdated = sqlDB.update(RecordsTable.TABLE_RECORDS, 
             values,
-            RecordsTable.COLUMN_ID + "=" + id 
+            RecordsTable.TABLE_RECORDS_COLUMN_ID + "=" + id 
             + " and " 
             + selection,
             selectionArgs);
@@ -185,7 +181,7 @@ public class RecordsContentProvider extends ContentProvider {
   }
 
   private void checkColumns(String[] projection) {
-    String[] available = RecordsTable.TABLE_RECORD_AVAILABLE_COLUMS;
+    String[] available = RecordsTable.TABLE_RECORDS_AVAILABLE_COLUMS;
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
       HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
