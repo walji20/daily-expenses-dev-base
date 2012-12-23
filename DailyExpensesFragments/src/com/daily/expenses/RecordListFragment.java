@@ -17,8 +17,8 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.daily.expenses.contentprovider.RecordsContentProvider;
-import com.daily.expenses.database.RecordsTable;
+import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyTables;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports
@@ -37,7 +37,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	// If non-null, this is the current filter the user has provided.
 	String mCurFilter;
 
-	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { RecordsTable.TABLE_RECORDS_COLUMN_TITLE, RecordsTable.TABLE_RECORDS_COLUMN_ID };
+	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_ID };
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -193,15 +193,15 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		// currently filtering.
 		Uri baseUri;
 		if (mCurFilter != null) {
-			baseUri = Uri.withAppendedPath(RecordsContentProvider.RECORDS_CONTENT_FILTER_URI, Uri.encode(mCurFilter));
+			baseUri = Uri.withAppendedPath(DailyContentProvider.RECORDS_CONTENT_FILTER_URI, Uri.encode(mCurFilter));
 		} else {
-			baseUri = RecordsContentProvider.RECORDS_CONTENT_URI;
+			baseUri = DailyContentProvider.RECORDS_CONTENT_URI;
 		}
 
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		String select = "((" + RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " NOTNULL) AND (" + RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " != '' ))";
-		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, null, RecordsTable.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
+		String select = "((" + DailyTables.TABLE_RECORDS_COLUMN_TITLE + " NOTNULL) AND (" + DailyTables.TABLE_RECORDS_COLUMN_TITLE + " != '' ))";
+		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, null, DailyTables.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

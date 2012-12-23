@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.daily.expenses.contentprovider.RecordsContentProvider;
+import com.daily.expenses.contentprovider.DailyContentProvider;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -48,10 +48,10 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
             Bundle arguments = new Bundle();
             
             //distinguish between detail record and new record
-            Parcelable item = getIntent().getParcelableExtra(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
+            Parcelable item = getIntent().getParcelableExtra(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE);
             if(item != null) {
             	// detail record	
-            	arguments.putParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE, item);
+            	arguments.putParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE, item);
             } else {
             	// new record - dont pass an argument
             	arguments = null;

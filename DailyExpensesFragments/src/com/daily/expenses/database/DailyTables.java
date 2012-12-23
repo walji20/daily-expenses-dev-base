@@ -9,7 +9,7 @@ import android.util.Log;
  * @author No3x
  *
  */
-public class RecordsTable {
+public class DailyTables {
 
 	// Database table
 	public static final String TABLE_RECORDS = "record";
@@ -81,11 +81,11 @@ public class RecordsTable {
 		database.execSQL(DATABASE_CREATE);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		Log.d(RecordsTable.class.getName(), "Created and filled database.");
+		Log.d(DailyTables.class.getName(), "Created and filled database.");
 	}
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-		Log.w(RecordsTable.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
+		Log.w(DailyTables.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
 		database.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDS);
 		onCreate(database);
 	}
