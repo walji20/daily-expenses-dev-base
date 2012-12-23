@@ -143,7 +143,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 	}
 
 	@Override
-	public boolean onContextItemSelected(com.actionbarsherlock.view.MenuItem item) {
+	public boolean onContextItemSelected(MenuItem item) {
 		Log.d("id", "" + item.getItemId());
 		switch (item.getItemId()) {
 		case DELETE_ID:

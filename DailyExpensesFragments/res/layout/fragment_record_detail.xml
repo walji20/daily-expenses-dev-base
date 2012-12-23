@@ -15,27 +15,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+          
 
-                <DatePicker
-                    android:id="@+id/detail_datePicker01"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:calendarViewShown="false"
-                    android:layout_weight="6" >
-                </DatePicker>
-
-                <Spinner
-                    android:id="@+id/detail_categoryType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/categories" 
-                    android:layout_weight="4">
-                </Spinner>
-            </LinearLayout>
+	        <DatePicker
+	            android:id="@+id/detail_datePicker01"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:calendarViewShown="false"
+	            android:layout_weight="6" >
+	        </DatePicker>
+	
+	        <Spinner
+	            android:id="@+id/detail_categoryType"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:entries="@array/categories" 
+	            android:layout_weight="4">
+	        </Spinner>
+           
 
             <EditText
                 android:id="@+id/detail_title"
@@ -65,7 +62,7 @@
                     android:id="@+id/detail_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:gravity="top"
                     android:hint="Amount"
                     android:imeOptions="actionNext"
