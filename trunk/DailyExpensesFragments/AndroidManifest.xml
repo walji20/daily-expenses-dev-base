@@ -36,7 +36,7 @@
         </activity>
 
         <provider
-            android:name="com.daily.expenses.contentprovider.RecordsContentProvider"
+            android:name="com.daily.expenses.contentprovider.DailyContentProvider"
             android:authorities="com.daily.expenses.contentprovider" >
         </provider>
 

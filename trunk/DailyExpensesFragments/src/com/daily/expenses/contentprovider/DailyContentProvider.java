@@ -23,8 +23,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.daily.expenses.database.RecordsDatabaseHelper;
-import com.daily.expenses.database.RecordsTable;
+import com.daily.expenses.database.DailyDatabaseHelper;
+import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.util.LogUtils;
 import com.daily.expenses.util.SelectionBuilder;
 
@@ -32,11 +32,11 @@ import static com.daily.expenses.util.LogUtils.LOGV;
 import static com.daily.expenses.util.LogUtils.LOGD;
 import static com.daily.expenses.util.LogUtils.makeLogTag;
 
-public class RecordsContentProvider extends ContentProvider {
-	private static final String TAG = LogUtils.makeLogTag(RecordsContentProvider.class);
+public class DailyContentProvider extends ContentProvider {
+	private static final String TAG = LogUtils.makeLogTag(DailyContentProvider.class);
 
 	// database
-	private RecordsDatabaseHelper database;
+	private DailyDatabaseHelper database;
 
 	// Used for the UriMacher
 	private static final int RECORDS = 10;
@@ -70,7 +70,7 @@ public class RecordsContentProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		database = new RecordsDatabaseHelper(getContext());
+		database = new DailyDatabaseHelper(getContext());
 		return true;
 	}
 
@@ -102,20 +102,20 @@ public class RecordsContentProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case RECORDS: {
-                return builder.table(RecordsTable.TABLE_RECORDS);
+                return builder.table(DailyTables.TABLE_RECORDS);
             }
             case RECORD_ID: {
                 final String recordId =  uri.getLastPathSegment();
-                return builder.table(RecordsTable.TABLE_RECORDS)
-                        .where(RecordsTable.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
+                return builder.table(DailyTables.TABLE_RECORDS)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
             }
             case CATEGORIES: {
-                return builder.table(RecordsTable.TABLE_CATEGORIES);
+                return builder.table(DailyTables.TABLE_CATEGORIES);
             }
             case CATEGORY_ID: {
                 final String categoryId = uri.getLastPathSegment();
-                return builder.table(RecordsTable.TABLE_CATEGORIES)
-                        .where(RecordsTable.TABLE_CATEGORIES_COLUMN_ID + "=?", categoryId);
+                return builder.table(DailyTables.TABLE_CATEGORIES)
+                        .where(DailyTables.TABLE_CATEGORIES_COLUMN_ID + "=?", categoryId);
             }
           
             default: {
@@ -133,23 +133,23 @@ public class RecordsContentProvider extends ContentProvider {
         switch (match) {
             case RECORDS: {
                 return builder
-                        .table(RecordsTable.TABLE_RECORDS);
+                        .table(DailyTables.TABLE_RECORDS);
             }
             case RECORD_ID: {
             	final String recordId = uri.getLastPathSegment();
                 return builder
-                        .table(RecordsTable.TABLE_RECORDS)
-                        .where(RecordsTable.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
+                        .table(DailyTables.TABLE_RECORDS)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
             }
             case CATEGORIES: {
             	return builder
-            			.table(RecordsTable.TABLE_CATEGORIES);
+            			.table(DailyTables.TABLE_CATEGORIES);
             }
             case CATEGORY_ID: {
             	final String categorydId = uri.getLastPathSegment();
             	return builder
-            			.table(RecordsTable.TABLE_CATEGORIES)
-            			.where(RecordsTable.TABLE_CATEGORIES_COLUMN_ID + "=?", categorydId);
+            			.table(DailyTables.TABLE_CATEGORIES)
+            			.where(DailyTables.TABLE_CATEGORIES_COLUMN_ID + "=?", categorydId);
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -181,14 +181,14 @@ public class RecordsContentProvider extends ContentProvider {
         long id = 0;
         switch (match) {
             case RECORDS: {
-                id = db.insertOrThrow(RecordsTable.TABLE_RECORDS, null, values);
+                id = db.insertOrThrow(DailyTables.TABLE_RECORDS, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 Uri u = Uri.parse(RECORDS_PATH + "/" + id);
                 Log.d(TAG, "" + u);
                 return u;
             }
             case CATEGORIES: {
-                id = db.insertOrThrow(RecordsTable.TABLE_CATEGORIES, null, values);
+                id = db.insertOrThrow(DailyTables.TABLE_CATEGORIES, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Uri.parse(CATEGORIES_PATH + "/" + id);
             }
@@ -220,7 +220,7 @@ public class RecordsContentProvider extends ContentProvider {
 	}
 
 	private void checkColumns(String[] projection) {
-		String[] available = RecordsTable.TABLE_RECORDS_AVAILABLE_COLUMS;
+		String[] available = DailyTables.TABLE_RECORDS_AVAILABLE_COLUMS;
 		if (projection != null) {
 			HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
 			HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));

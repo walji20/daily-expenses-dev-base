@@ -23,8 +23,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.daily.expenses.contentprovider.RecordsContentProvider;
-import com.daily.expenses.database.RecordsTable;
+import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyTables;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
 import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
@@ -74,13 +74,13 @@ public class RecordDetailFragment extends SherlockFragment {
 		super.onCreate(savedInstanceState);
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true);
-		if (getArguments() != null && getArguments().containsKey(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE)) {
+		if (getArguments() != null && getArguments().containsKey(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE)) {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
 			/*
 			 * mItem = RecordsContent.ITEM_MAP.get(getArguments().getParcelable(
-			 * RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE));
+			 * DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE));
 			 */
 		}
 	}
@@ -137,11 +137,11 @@ public class RecordDetailFragment extends SherlockFragment {
 		Bundle extras = this.getArguments();
 
 		// Check from the saved Instance
-		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
+		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE);
 
 		// Or passed from the other activity
 		if (extras != null) {
-			recordUri = (Uri) extras.getParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
+			recordUri = (Uri) extras.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE);
 			fillData(recordUri);
 		} else {
 			Toast.makeText(getActivity(), "New record.", Toast.LENGTH_SHORT).show();
@@ -152,9 +152,9 @@ public class RecordDetailFragment extends SherlockFragment {
 
 	private void fillData(Uri uri) {
 		Log.d("todo", "todoUri: " + recordUri);
-		String[] projection = { RecordsTable.TABLE_RECORDS_COLUMN_ID, RecordsTable.TABLE_RECORDS_COLUMN_TITLE, RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION, RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT,
-				RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE,
-				RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE, };
+		String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT,
+				DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE,
+				DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, };
 
 		Cursor cursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
 
@@ -165,7 +165,7 @@ public class RecordDetailFragment extends SherlockFragment {
 
 					/*
 					 * String category =
-					 * cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable
+					 * cursor.getString(cursor.getColumnIndexOrThrow(DailyTables
 					 * .COLUMN_CATEGORY));
 					 * 
 					 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
@@ -174,7 +174,7 @@ public class RecordDetailFragment extends SherlockFragment {
 					 */
 
 					/* Convert unix time stamp to mills */
-					long unixTs = cursor.getInt(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE));
+					long unixTs = cursor.getInt(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
 					Calendar c = Calendar.getInstance();
 					long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
 					c.setTimeInMillis( unixTms );
@@ -183,13 +183,13 @@ public class RecordDetailFragment extends SherlockFragment {
 					Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
 					mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 					
-					mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_TITLE)));
-					mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION)));
-					mAmountText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT)));
-					mBookingTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
-					mPeriodTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
+					mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
+					mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
+					mAmountText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
+					mBookingTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
+					mPeriodTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
 
-					if (cursor.getInt(cursor.getColumnIndexOrThrow(RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
+					if (cursor.getInt(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
 						mPayStateCheck.setChecked(true);
 					} else {
 						mPayStateCheck.setChecked(false);
@@ -217,10 +217,6 @@ public class RecordDetailFragment extends SherlockFragment {
 		int unixDateDay = mUnixDate.getDayOfMonth();
 		
 		
-		// Long unixDate = mUnixDate.get
-		
-
-		
 		Calendar c = Calendar.getInstance();
 		c.set(unixDateYear, unixDateMonth, unixDateDay);
 		// get ms from calendar
@@ -238,18 +234,18 @@ public class RecordDetailFragment extends SherlockFragment {
 
 		ContentValues values = new ContentValues();
 		// TODO: do it :D
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_TITLE, titleText);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_DESCRIPTION, descriptionText);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_AMOUNT, amountText);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingTypeText);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_PERIOD_TYPE, periodTypeText);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, category);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_UNIX_DATE, unixTs);
-		values.put(RecordsTable.TABLE_RECORDS_COLUMN_PAY_STATE, payState);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_TITLE, titleText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, descriptionText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT, amountText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingTypeText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, periodTypeText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, category);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE, unixTs);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, payState);
 
 		if (recordUri == null) {
 			// New record
-			recordUri = getActivity().getContentResolver().insert(RecordsContentProvider.RECORDS_CONTENT_URI, values);
+			recordUri = getActivity().getContentResolver().insert(DailyContentProvider.RECORDS_CONTENT_URI, values);
 		} else {
 			// Update record
 			getActivity().getContentResolver().update(recordUri, values, null, null);
