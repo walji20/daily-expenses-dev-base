@@ -74,13 +74,13 @@ public class RecordDetailFragment extends SherlockFragment {
 		super.onCreate(savedInstanceState);
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true);
-		if (getArguments() != null && getArguments().containsKey(RecordsContentProvider.CONTENT_ITEM_TYPE)) {
+		if (getArguments() != null && getArguments().containsKey(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE)) {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
 			/*
 			 * mItem = RecordsContent.ITEM_MAP.get(getArguments().getParcelable(
-			 * RecordsContentProvider.CONTENT_ITEM_TYPE));
+			 * RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE));
 			 */
 		}
 	}
@@ -137,11 +137,11 @@ public class RecordDetailFragment extends SherlockFragment {
 		Bundle extras = this.getArguments();
 
 		// Check from the saved Instance
-		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
+		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
 
 		// Or passed from the other activity
 		if (extras != null) {
-			recordUri = (Uri) extras.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
+			recordUri = (Uri) extras.getParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
 			fillData(recordUri);
 		} else {
 			Toast.makeText(getActivity(), "New record.", Toast.LENGTH_SHORT).show();
@@ -249,7 +249,7 @@ public class RecordDetailFragment extends SherlockFragment {
 
 		if (recordUri == null) {
 			// New record
-			recordUri = getActivity().getContentResolver().insert(RecordsContentProvider.CONTENT_URI, values);
+			recordUri = getActivity().getContentResolver().insert(RecordsContentProvider.RECORDS_CONTENT_URI, values);
 		} else {
 			// Update record
 			getActivity().getContentResolver().update(recordUri, values, null, null);

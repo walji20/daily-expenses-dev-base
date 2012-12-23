@@ -193,9 +193,9 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		// currently filtering.
 		Uri baseUri;
 		if (mCurFilter != null) {
-			baseUri = Uri.withAppendedPath(RecordsContentProvider.CONTENT_FILTER_URI, Uri.encode(mCurFilter));
+			baseUri = Uri.withAppendedPath(RecordsContentProvider.RECORDS_CONTENT_FILTER_URI, Uri.encode(mCurFilter));
 		} else {
-			baseUri = RecordsContentProvider.CONTENT_URI;
+			baseUri = RecordsContentProvider.RECORDS_CONTENT_URI;
 		}
 
 		// Now create and return a CursorLoader that will take care of

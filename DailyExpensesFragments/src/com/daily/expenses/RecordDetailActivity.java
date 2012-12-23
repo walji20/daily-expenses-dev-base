@@ -48,10 +48,10 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
             Bundle arguments = new Bundle();
             
             //distinguish between detail record and new record
-            Parcelable item = getIntent().getParcelableExtra(RecordsContentProvider.CONTENT_ITEM_TYPE);
+            Parcelable item = getIntent().getParcelableExtra(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE);
             if(item != null) {
             	// detail record	
-            	arguments.putParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE, item);
+            	arguments.putParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE, item);
             } else {
             	// new record - dont pass an argument
             	arguments = null;
