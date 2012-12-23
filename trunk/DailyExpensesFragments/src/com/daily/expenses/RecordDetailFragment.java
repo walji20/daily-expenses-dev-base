@@ -8,13 +8,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -22,10 +19,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -33,9 +27,6 @@ import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
-import com.throrinstudio.android.common.libs.validator.validate.ConfirmValidate;
-import com.throrinstudio.android.common.libs.validator.validate.OrTwoRequiredValidate;
-import com.throrinstudio.android.common.libs.validator.validator.EmailValidator;
 import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
 
 
