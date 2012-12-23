@@ -74,6 +74,8 @@ public class RecordsTable {
 	      + "'1355765617', "
 	      + "'1'"
 	      + ");";
+	public static final String TABLE_CATEGORIES = "categories";
+	public static final String TABLE_CATEGORIES_COLUMN_ID = "_id";
 	  
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE);
