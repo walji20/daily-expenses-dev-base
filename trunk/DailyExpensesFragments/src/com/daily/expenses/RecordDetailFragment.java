@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -30,6 +31,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
+import com.throrinstudio.android.common.libs.validator.Form;
+import com.throrinstudio.android.common.libs.validator.Validate;
+import com.throrinstudio.android.common.libs.validator.validate.ConfirmValidate;
+import com.throrinstudio.android.common.libs.validator.validate.OrTwoRequiredValidate;
+import com.throrinstudio.android.common.libs.validator.validator.EmailValidator;
+import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
+
 
 /**
  * A fragment representing a single Item detail screen. This fragment is either
@@ -47,7 +55,10 @@ public class RecordDetailFragment extends SherlockFragment {
 	 * The dummy content this fragment is presenting.
 	 */
 	// private RecordsContent.Record mItem;
-
+	
+	/* Validation */
+	private Form mForm;
+	/* GUI Elements */
 	private Spinner mCategory;
 	private DatePicker mUnixDate;
 	private EditText mTitleText;
@@ -81,13 +92,12 @@ public class RecordDetailFragment extends SherlockFragment {
 			 * RecordsContentProvider.CONTENT_ITEM_TYPE));
 			 */
 		}
-		ActionBar frag = getSherlockActivity().getSupportActionBar();
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_record_detail, container, false);
-
+		
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mUnixDate = (DatePicker) rootView.findViewById(R.id.detail_datePicker01);
 		mTitleText = (EditText) rootView.findViewById(R.id.detail_title);
@@ -97,12 +107,32 @@ public class RecordDetailFragment extends SherlockFragment {
 		mPeriodTypeText = (EditText) rootView.findViewById(R.id.detail_periodType);
 		mPayStateCheck = (CheckBox) rootView.findViewById(R.id.detail_payState);
 		mRecordEditButton = (Button) rootView.findViewById(R.id.record_edit_button);
-
-		mRecordEditButton.setOnClickListener(new View.OnClickListener() {
+		
+		/* Add validation */
+		mForm = new Form();
+	    Validate validateTitle = new Validate(mTitleText);
+	    Validate validateDescription = new Validate(mDescriptionText);
+	    Validate validateAmount = new Validate(mAmountText);
+	    Validate validateBookingType = new Validate(mBookingTypeText);
+	    Validate validatePeriodType = new Validate(mPeriodTypeText);
+	    
+	    validateTitle.addValidator(new NotEmptyValidator(getActivity()));
+	    validateDescription.addValidator(new NotEmptyValidator(getActivity()));
+	    validateAmount.addValidator(new NotEmptyValidator(getActivity()));
+	    validateBookingType.addValidator(new NotEmptyValidator(getActivity()));
+	    validatePeriodType.addValidator(new NotEmptyValidator(getActivity()));
+	    
+	    mForm.addValidates(validateTitle);
+	    mForm.addValidates(validateDescription);
+	    mForm.addValidates(validateAmount);
+	    mForm.addValidates(validateBookingType);
+	    mForm.addValidates(validatePeriodType);
+	    
+		mRecordEditButton.setOnClickListener( new View.OnClickListener() {
+			@Override
 			public void onClick(View view) {
-				// TODO: other checks, maybe use validation library
-				if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-					Toast.makeText(getActivity(), "Please maintain a title", Toast.LENGTH_LONG).show();
+				if(!mForm.validate()) {
+					/* Form is not valid - but FormValidation should do the rest for us*/
 				} else {
 					// TODO: back to list
 					saveState();
@@ -110,7 +140,6 @@ public class RecordDetailFragment extends SherlockFragment {
 					Toast.makeText(getActivity(), "Record saved", Toast.LENGTH_LONG).show();
 				}
 			}
-
 		});
 
 		// Bundle extras = this.getActivity().getIntent().getExtras();
