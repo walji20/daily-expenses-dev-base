@@ -9,10 +9,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
@@ -92,7 +95,8 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
+		setHasOptionsMenu(true); 
 		this.fillData();
 	}
 
@@ -108,18 +112,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 
 		int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
 
-		getActivity().getSupportLoaderManager().initLoader(0, null, this); /*
-																			 * 0,
-																			 * null
-																			 * ,
-																			 * (
-																			 * LoaderCallbacks
-																			 * <
-																			 * DummyContent
-																			 * >
-																			 * )
-																			 * this
-																			 */
+		getActivity().getSupportLoaderManager().initLoader(0, null, this); 
 		mAdapter = new SimpleCursorAdapter(this.getActivity(), layout, null, RECORDS_OVERVIEW_PROJECTION, to, 0);
 		setListAdapter(mAdapter);
 
