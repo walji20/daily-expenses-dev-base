@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class RecordsDatabaseHelper extends SQLiteOpenHelper {
 
-	private static final String DATABASE_NAME = "records.db";
+	private static final String DATABASE_NAME = "daily.db";
 	private static final int DATABASE_VERSION = 1;
 
 	public RecordsDatabaseHelper(Context context) {

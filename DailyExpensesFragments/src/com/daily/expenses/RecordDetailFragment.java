@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.RecordsContentProvider;
 import com.daily.expenses.database.RecordsTable;
 
@@ -59,11 +66,12 @@ public class RecordDetailFragment extends SherlockFragment {
 	 */
 	public RecordDetailFragment() {
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
+		setHasOptionsMenu(true);
 		if (getArguments() != null && getArguments().containsKey(RecordsContentProvider.CONTENT_ITEM_TYPE)) {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
@@ -73,6 +81,7 @@ public class RecordDetailFragment extends SherlockFragment {
 			 * RecordsContentProvider.CONTENT_ITEM_TYPE));
 			 */
 		}
+		ActionBar frag = getSherlockActivity().getSupportActionBar();
 	}
 
 	@Override
@@ -115,7 +124,7 @@ public class RecordDetailFragment extends SherlockFragment {
 			recordUri = (Uri) extras.getParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE);
 			fillData(recordUri);
 		} else {
-			Toast.makeText(getActivity(), "Something went wrong when passing the uri or this is a new record.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "New record.", Toast.LENGTH_SHORT).show();
 		}
 
 		return rootView;
@@ -230,4 +239,23 @@ public class RecordDetailFragment extends SherlockFragment {
 	public void requestSave() {
 		mRecordEditButton.performClick();
 	}
+	
+	@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.activity_record_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_record_detail_save:
+            // Handle fragment menu item
+        	Log.d("save", "called");
+        	requestSave();
+            return true;
+        default:
+            // Not one of ours. Perform default menu processing
+            return super.onOptionsItemSelected(item);
+        }
+    }
 }

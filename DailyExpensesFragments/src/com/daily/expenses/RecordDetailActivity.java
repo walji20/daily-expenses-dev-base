@@ -65,12 +65,12 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
         }
     }
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.activity_record_detail, menu);
-		return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getSupportMenuInflater();
+//		inflater.inflate(R.menu.activity_record_detail, menu);
+//		return true;
+//	}
 	
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -85,9 +85,6 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
                 //
                 NavUtils.navigateUpTo(this, new Intent(this, RecordListActivity.class));
                 return true;
-                case R.id.menu_record_detail_save:
-                	Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.record_detail_container);
-			((RecordDetailFragment) currentFragment).requestSave();
         }
         return super.onOptionsItemSelected(item);
     }
