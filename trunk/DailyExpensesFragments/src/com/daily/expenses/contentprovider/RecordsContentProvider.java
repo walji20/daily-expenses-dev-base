@@ -32,28 +32,37 @@ public class RecordsContentProvider extends ContentProvider {
   // Used for the UriMacher
   private static final int RECORDS = 10;
   private static final int RECORD_ID = 20;
+  private static final int CATEGORIES = 30;
+  private static final int CATEGORY_ID = 40;
 
   private static final String AUTHORITY = "com.daily.expenses.contentprovider";
 
-  private static final String BASE_PATH = "records";
+  private static final String RECORDS_PATH = "records";
+  private static final String CATEGORIES_PATH = "categories";
   
-  public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
+  public static final Uri RECORDS_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + RECORDS_PATH);
+  public static final Uri CATEGORIES_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CATEGORIES_PATH);
   /*TODO: implement filter. At the moment no filter is implemented */
-  public static final Uri CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
+  public static final Uri RECORDS_CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + RECORDS_PATH);
+  public static final Uri CATEGORIES_CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + CATEGORIES_PATH);
 
-  public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/records";
-  public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/record";
+  public static final String RECORDS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/records";
+  public static final String RECORDS_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/record";
+  public static final String CATEGORIES_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
+  public static final String CATEGORIES_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/categories";
 
-  private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+  private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH) ;
   static {
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH, RECORDS);
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", RECORD_ID);
+    sUriMatcher.addURI(AUTHORITY, RECORDS_PATH, RECORDS);
+    sUriMatcher.addURI(AUTHORITY, RECORDS_PATH + "/#", RECORD_ID);
+    sUriMatcher.addURI(AUTHORITY, CATEGORIES_PATH, CATEGORIES);
+    sUriMatcher.addURI(AUTHORITY, CATEGORIES_PATH + "/#", CATEGORY_ID);
   }
 
   @Override
   public boolean onCreate() {
     database = new RecordsDatabaseHelper(getContext());
-    return false;
+    return true;
   }
 
   @Override
@@ -67,9 +76,9 @@ public class RecordsContentProvider extends ContentProvider {
     checkColumns(projection);
 
     // Set the table
-    queryBuilder.setTables(RecordsTable.TABLE_RECORDS);
-
-    int uriType = sURIMatcher.match(uri);
+    queryBuilder.setTables(RecordsTable.TABLE_RECORDS );
+    
+    int uriType = sUriMatcher.match(uri);
     switch (uriType) {
     case RECORDS:
       break;
@@ -93,12 +102,24 @@ public class RecordsContentProvider extends ContentProvider {
 
   @Override
   public String getType(Uri uri) {
-    return null;
+	  final int match = sUriMatcher.match(uri);
+	  switch (match) {
+      case RECORDS:
+          return RECORDS_CONTENT_TYPE;
+      case RECORD_ID:
+          return RECORDS_CONTENT_TYPE;
+      case CATEGORIES:
+    	  return CATEGORIES_CONTENT_TYPE;
+      case CATEGORY_ID:
+    	  return CATEGORIES_CONTENT_TYPE;
+	  default: 
+          throw new UnsupportedOperationException("Unknown uri: " + uri);
+	  }
   }
 
   @Override
   public Uri insert(Uri uri, ContentValues values) {
-    int uriType = sURIMatcher.match(uri);
+    int uriType = sUriMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     long id = 0;
@@ -110,12 +131,12 @@ public class RecordsContentProvider extends ContentProvider {
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
     getContext().getContentResolver().notifyChange(uri, null);
-    return Uri.parse(BASE_PATH + "/" + id);
+    return Uri.parse(RECORDS_PATH + "/" + id);
   }
 
   @Override
   public int delete(Uri uri, String selection, String[] selectionArgs) {
-    int uriType = sURIMatcher.match(uri);
+    int uriType = sUriMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     switch (uriType) {
@@ -147,7 +168,7 @@ public class RecordsContentProvider extends ContentProvider {
   public int update(Uri uri, ContentValues values, String selection,
       String[] selectionArgs) {
 
-    int uriType = sURIMatcher.match(uri);
+    int uriType = sUriMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsUpdated = 0;
     switch (uriType) {

@@ -86,8 +86,8 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 				Bundle arguments = new Bundle();
 				arguments = null;
 				// arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
-				//Uri recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/");
-				//arguments.putParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE, recordUri);
+				//Uri recordUri = Uri.parse(RecordsContentProvider.RECORDS_CONTENT_URI + "/");
+				//arguments.putParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE, recordUri);
 
 				recordDetailFragment = new RecordDetailFragment();
 
@@ -118,8 +118,8 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			// fragment transaction.
 			Bundle arguments = new Bundle();
 			// arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
-			Uri recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + id);
-			arguments.putParcelable(RecordsContentProvider.CONTENT_ITEM_TYPE, recordUri);
+			Uri recordUri = Uri.parse(RecordsContentProvider.RECORDS_CONTENT_URI + "/" + id);
+			arguments.putParcelable(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE, recordUri);
 
 			recordDetailFragment = new RecordDetailFragment();
 
@@ -130,8 +130,8 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, RecordDetailActivity.class);
-			Uri recordUri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + id);
-			detailIntent.putExtra(RecordsContentProvider.CONTENT_ITEM_TYPE, recordUri);
+			Uri recordUri = Uri.parse(RecordsContentProvider.RECORDS_CONTENT_URI + "/" + id);
+			detailIntent.putExtra(RecordsContentProvider.RECORDS_CONTENT_ITEM_TYPE, recordUri);
 			startActivity(detailIntent);
 		}
 	}
@@ -148,7 +148,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		switch (item.getItemId()) {
 		case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-			Uri uri = Uri.parse(RecordsContentProvider.CONTENT_URI + "/" + info.id);
+			Uri uri = Uri.parse(RecordsContentProvider.RECORDS_CONTENT_URI + "/" + info.id);
 			getContentResolver().delete(uri, null, null);
 			Log.d("", "Delete selected");
 			return true;
