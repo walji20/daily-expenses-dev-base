@@ -78,7 +78,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.insert:
+		case R.id.insert: {
 			if (mTwoPane) {
 				// In two-pane mode, show the detail view in this activity by
 				// adding or replacing the detail fragment using a
@@ -86,8 +86,10 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 				Bundle arguments = new Bundle();
 				arguments = null;
 				// arguments.putString(RecordDetailFragment.ARG_ITEM_ID, id);
-				//Uri recordUri = Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/");
-				//arguments.putParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE, recordUri);
+				// Uri recordUri =
+				// Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/");
+				// arguments.putParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE,
+				// recordUri);
 
 				recordDetailFragment = new RecordDetailFragment();
 
@@ -102,6 +104,11 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			}
 
 			return true;
+		}
+		case R.id.grid: {
+			startActivity(new Intent(this, Grid.class));
+			return true;
+		}
 		}
 		return super.onOptionsItemSelected(item);
 	}

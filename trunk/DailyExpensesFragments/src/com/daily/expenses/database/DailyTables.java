@@ -12,7 +12,7 @@ import android.util.Log;
 public class DailyTables {
 
 	// Database table
-	public static final String TABLE_RECORDS = "record";
+	public static final String TABLE_RECORDS = "records";
 	public static final String TABLE_RECORDS_COLUMN_ID = "_id";
 	public static final String TABLE_RECORDS_COLUMN_TITLE = "title";
 	public static final String TABLE_RECORDS_COLUMN_DESCRIPTION = "description";
@@ -23,20 +23,33 @@ public class DailyTables {
 	public static final String TABLE_RECORDS_COLUMN_UNIX_DATE = "unixDate";
 	public static final String TABLE_RECORDS_COLUMN_PAY_STATE = "payState";
     public static final String[] TABLE_RECORDS_AVAILABLE_COLUMS = { 
-		  TABLE_RECORDS_COLUMN_ID, 
-		  TABLE_RECORDS_COLUMN_TITLE, 
-		  TABLE_RECORDS_COLUMN_DESCRIPTION, 
-		  TABLE_RECORDS_COLUMN_AMOUNT, 
-		  TABLE_RECORDS_COLUMN_BOOKING_TYPE, 
-		  TABLE_RECORDS_COLUMN_PERIOD_TYPE, 
-		  TABLE_RECORDS_COLUMN_CATEGORY_TYPE, 
-		  TABLE_RECORDS_COLUMN_UNIX_DATE, 
-		  TABLE_RECORDS_COLUMN_PAY_STATE
+		TABLE_RECORDS_COLUMN_ID, 
+		TABLE_RECORDS_COLUMN_TITLE, 
+		TABLE_RECORDS_COLUMN_DESCRIPTION, 
+		TABLE_RECORDS_COLUMN_AMOUNT, 
+		TABLE_RECORDS_COLUMN_BOOKING_TYPE, 
+		TABLE_RECORDS_COLUMN_PERIOD_TYPE, 
+		TABLE_RECORDS_COLUMN_CATEGORY_TYPE, 
+		TABLE_RECORDS_COLUMN_UNIX_DATE, 
+		TABLE_RECORDS_COLUMN_PAY_STATE
 	 };
-	  
+    
+    public static final String TABLE_CATEGORIES = "categories";
+    public static final String TABLE_CATEGORIES_COLUMN_ID = "_id";
+    public static final String TABLE_CATEGORIES_COLUMN_ID_PARENT = "parentId";
+    public static final String TABLE_CATEGORIES_COLUMN_TITLE = "title";
+    public static final String TABLE_CATEGORIES_COLUMN_DESCRIPTION = "description";
+    public static final String TABLE_CATEGORIES_COLUMN_RESOURCE_ICON = "resourceIcon";
+    public static final String[] TABLE_CATEGORIES_AVAILABLE_COLUMS = { 
+		TABLE_CATEGORIES_COLUMN_ID, 
+		TABLE_CATEGORIES_COLUMN_ID_PARENT, 
+		TABLE_CATEGORIES_COLUMN_TITLE, 
+		TABLE_CATEGORIES_COLUMN_DESCRIPTION, 
+		TABLE_CATEGORIES_COLUMN_RESOURCE_ICON 
+	 };  
 
 	  // Database creation SQL statement
-	  private static final String DATABASE_CREATE = "CREATE TABLE " 
+	  private static final String TABLE_RECORDS_CREATE = "CREATE TABLE " 
 	      + TABLE_RECORDS
 	      + "(" 
 	      + TABLE_RECORDS_COLUMN_ID + " integer primary key autoincrement, " 
@@ -49,6 +62,16 @@ public class DailyTables {
 	      + TABLE_RECORDS_COLUMN_UNIX_DATE + " long not null, " 
 	      + TABLE_RECORDS_COLUMN_PAY_STATE + " int not null" 
 	      + ");";
+	  
+	  private static final String TABLE_CATEGORIES_CREATE = "CREATE TABLE " 
+			  + TABLE_CATEGORIES
+			  + "(" 
+			  + TABLE_CATEGORIES_COLUMN_ID + " integer primary key autoincrement, " 
+			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + " int default '0' not null, " 
+			  + TABLE_CATEGORIES_COLUMN_TITLE + " text not null, " 
+			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + " double not null, " 
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + " int not null " 
+			  + ");";
 	  
 	  // Database dummy items statement
 	  private static final String TABLE_RECORDS_DUMMY_DATA = "insert into " 
@@ -74,13 +97,45 @@ public class DailyTables {
 	      + "'1355765617', "
 	      + "'1'"
 	      + ");";
-	public static final String TABLE_CATEGORIES = "categories";
-	public static final String TABLE_CATEGORIES_COLUMN_ID = "_id";
+	  
+	  private static final String TABLE_CATEGORIES_DUMMY_DATA = "insert into " 
+			  + TABLE_CATEGORIES
+			  + "(" 
+			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + ", " 
+			  + TABLE_CATEGORIES_COLUMN_TITLE + ", " 
+			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + ", " 
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON
+			  + ")"
+			  + " VALUES"
+			  + "(" 
+			  + "'0', "
+			  + "'Category 1', "
+			  + "'Test Description for Category 1', "
+			  + "'114'"
+			  + ");";
+	  private static final String TABLE_CATEGORIES_DUMMY_DATA2 = "insert into " 
+			  + TABLE_CATEGORIES
+			  + "(" 
+			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + ", " 
+			  + TABLE_CATEGORIES_COLUMN_TITLE + ", " 
+			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + ", " 
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON
+			  + ")"
+			  + " VALUES"
+			  + "(" 
+			  + "'0', "
+			  + "'Category 2', "
+			  + "'Test Description for Category 2', "
+			  + "'116'"
+			  + ");";
 	  
 	public static void onCreate(SQLiteDatabase database) {
-		database.execSQL(DATABASE_CREATE);
+		database.execSQL(TABLE_RECORDS_CREATE);
+		database.execSQL(TABLE_CATEGORIES_CREATE);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA);
+		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA2);
 		Log.d(DailyTables.class.getName(), "Created and filled database.");
 	}
 

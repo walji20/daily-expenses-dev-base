@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +51,7 @@ public class RecordDetailFragment extends SherlockFragment {
 	/* Validation */
 	private Form mForm;
 	/* GUI Elements */
+	private Spinner mCategoryReal;
 	private Spinner mCategory;
 	private DatePicker mUnixDate;
 	private EditText mTitleText;
@@ -89,6 +91,15 @@ public class RecordDetailFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_record_detail, container, false);
 		
+		mCategoryReal = (Spinner) rootView.findViewById(R.id.detail_categoryType_real);
+		String[] mCategoryProjection = { DailyTables.TABLE_CATEGORIES_COLUMN_ID, DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
+		int[] to = new int[] {  android.R.id.text1, android.R.id.text1 };
+		Cursor mCategoryCursor = getActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, mCategoryProjection, null, null, null);
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_spinner_item, mCategoryCursor, mCategoryProjection, to, 0 );
+		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+		mCategoryReal.setAdapter(adapter);
+		
+		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mUnixDate = (DatePicker) rootView.findViewById(R.id.detail_datePicker01);
 		mTitleText = (EditText) rootView.findViewById(R.id.detail_title);
@@ -102,19 +113,16 @@ public class RecordDetailFragment extends SherlockFragment {
 		/* Add validation */
 		mForm = new Form();
 	    Validate validateTitle = new Validate(mTitleText);
-	    Validate validateDescription = new Validate(mDescriptionText);
 	    Validate validateAmount = new Validate(mAmountText);
 	    Validate validateBookingType = new Validate(mBookingTypeText);
 	    Validate validatePeriodType = new Validate(mPeriodTypeText);
 	    
 	    validateTitle.addValidator(new NotEmptyValidator(getActivity()));
-	    validateDescription.addValidator(new NotEmptyValidator(getActivity()));
 	    validateAmount.addValidator(new NotEmptyValidator(getActivity()));
 	    validateBookingType.addValidator(new NotEmptyValidator(getActivity()));
 	    validatePeriodType.addValidator(new NotEmptyValidator(getActivity()));
 	    
 	    mForm.addValidates(validateTitle);
-	    mForm.addValidates(validateDescription);
 	    mForm.addValidates(validateAmount);
 	    mForm.addValidates(validateBookingType);
 	    mForm.addValidates(validatePeriodType);
@@ -156,57 +164,81 @@ public class RecordDetailFragment extends SherlockFragment {
 				DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE,
 				DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, };
 
-		Cursor cursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
+		Cursor mRecordCursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
 
-		if (cursor != null)
+		if (mRecordCursor != null)
 			try {
-				{
-					cursor.moveToFirst();
-
-					/*
-					 * String category =
-					 * cursor.getString(cursor.getColumnIndexOrThrow(DailyTables
-					 * .COLUMN_CATEGORY));
-					 * 
-					 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
-					 * (String) mCategory.getItemAtPosition(i); if
-					 * (s.equalsIgnoreCase(category)) { mCategory.setSelection(i); } }
-					 */
-
-					/* Convert unix time stamp to mills */
-					long unixTs = cursor.getInt(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
-					Calendar c = Calendar.getInstance();
-					long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
-					c.setTimeInMillis( unixTms );
+				mRecordCursor.moveToFirst();
+				
+				SimpleCursorAdapter mSCA = (SimpleCursorAdapter) mCategoryReal.getAdapter();
+				Cursor mCategoryCursor = mSCA.getCursor();
+				if(mCategoryCursor != null) {
 					
-					Log.d("Timestamp from DatePicker: ", "" + unixTs );
-					Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
-					mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
-					
-					mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
-					mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
-					mAmountText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
-					mBookingTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
-					mPeriodTypeText.setText(cursor.getString(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
-
-					if (cursor.getInt(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
-						mPayStateCheck.setChecked(true);
-					} else {
-						mPayStateCheck.setChecked(false);
+					String recrodCategorySpecId = mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE));
+					String[] specP = {  DailyTables.TABLE_CATEGORIES_COLUMN_ID,  DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
+					Cursor mCategorySpecCursor = getActivity().getContentResolver().query(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + recrodCategorySpecId), specP, null, null, null);
+					String CategorySpecTitle = null;
+					if(mCategorySpecCursor.moveToFirst()) {
+						CategorySpecTitle = mCategorySpecCursor.getString(mCategorySpecCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE));
 					}
+					
+					for (boolean hasItem = mCategoryCursor.moveToFirst(); hasItem; hasItem = mCategoryCursor.moveToNext()) {
+					    
+					}
+					
+					 for (int i = 0; i < mCategoryReal.getCount(); i++) { 
+						 Cursor theCursor = (Cursor) mCategoryReal.getItemAtPosition(i);
+						 String s = (String) theCursor.getString(theCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)); 
+						 if(s.equalsIgnoreCase(CategorySpecTitle)) { 
+							 mCategoryReal.setSelection(i); 
+							 break;
+						 } 
+					 }
+					 
+					Log.d("t", "succsess");
+				}
+				/*
+				 * String category =
+				 * cursor.getString(cursor.getColumnIndexOrThrow(DailyTables
+				 * .COLUMN_CATEGORY));
+				 * 
+				 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
+				 * (String) mCategory.getItemAtPosition(i); if
+				 * (s.equalsIgnoreCase(category)) { mCategory.setSelection(i); } }
+				 */
 
+				/* Convert unix time stamp to mills */
+				long unixTs = mRecordCursor.getInt(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
+				Calendar c = Calendar.getInstance();
+				long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
+				c.setTimeInMillis( unixTms );
+				
+				Log.d("Timestamp from DatePicker: ", "" + unixTs );
+				Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
+				mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+				
+				mTitleText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
+				mDescriptionText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
+				mAmountText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
+				mBookingTypeText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
+				mPeriodTypeText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
+
+				if (mRecordCursor.getInt(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
+					mPayStateCheck.setChecked(true);
+				} else {
+					mPayStateCheck.setChecked(false);
 				}
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		// Always close the cursor
-		cursor.close();
+		mRecordCursor.close();
 	}
 
 	private void saveState() {
 
-		String category = mCategory.getSelectedItem().toString();
+		long category = mCategoryReal.getSelectedItemId();
 		String titleText = mTitleText.getText().toString();
 		String descriptionText = mDescriptionText.getText().toString();
 		String amountText = mAmountText.getText().toString();
@@ -233,7 +265,6 @@ public class RecordDetailFragment extends SherlockFragment {
 		}
 
 		ContentValues values = new ContentValues();
-		// TODO: do it :D
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_TITLE, titleText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, descriptionText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT, amountText);
