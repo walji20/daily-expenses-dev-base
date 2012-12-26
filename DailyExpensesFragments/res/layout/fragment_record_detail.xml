@@ -15,29 +15,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-	        <DatePicker
-	            android:id="@+id/detail_datePicker01"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:calendarViewShown="false"
-	            android:layout_weight="6" >
-	        </DatePicker>
-	
-	        <Spinner
-	            android:id="@+id/detail_categoryType"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:entries="@array/categories" 
-	            android:layout_weight="4">
-	        </Spinner>
-	        
-	        <Spinner
-	            android:id="@+id/detail_categoryType_real"
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="4">
-	        </Spinner>
-           
+            <!-- <DatePicker
+                android:id="@+id/detail_datePicker01"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:calendarViewShown="false" >
+            </DatePicker> -->
+
+            <Spinner
+                android:id="@+id/detail_categoryType"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:entries="@array/dummy_categories" >
+            </Spinner>
 
             <EditText
                 android:id="@+id/detail_title"
