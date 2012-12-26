@@ -48,6 +48,10 @@
             android:name="com.daily.expenses.ContactsActivity"
             android:label="@string/title_activity_contacts" >
         </activity>
+        <activity
+            android:name="com.daily.expenses.Grid"
+            android:label="@string/title_activity_grid" >
+        </activity>
     </application>
 
 </manifest>
