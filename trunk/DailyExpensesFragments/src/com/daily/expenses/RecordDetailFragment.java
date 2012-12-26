@@ -4,27 +4,39 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.daily.expeneses.dialogs.EditDateDialogFragment;
+import com.daily.expeneses.dialogs.SpinnerEditCategoryDialogFragment;
 import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
@@ -51,7 +63,6 @@ public class RecordDetailFragment extends SherlockFragment {
 	/* Validation */
 	private Form mForm;
 	/* GUI Elements */
-	private Spinner mCategoryReal;
 	private Spinner mCategory;
 	private DatePicker mUnixDate;
 	private EditText mTitleText;
@@ -61,6 +72,7 @@ public class RecordDetailFragment extends SherlockFragment {
 	private EditText mPeriodTypeText;
 	private CheckBox mPayStateCheck;
 	private Button mRecordEditButton;
+	private SimpleCursorAdapter mCategoryAdapter = null;
 
 	private Uri recordUri;
 
@@ -91,13 +103,26 @@ public class RecordDetailFragment extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_record_detail, container, false);
 		
-		mCategoryReal = (Spinner) rootView.findViewById(R.id.detail_categoryType_real);
+		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		String[] mCategoryProjection = { DailyTables.TABLE_CATEGORIES_COLUMN_ID, DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
 		int[] to = new int[] {  android.R.id.text1, android.R.id.text1 };
 		Cursor mCategoryCursor = getActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, mCategoryProjection, null, null, null);
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_spinner_item, mCategoryCursor, mCategoryProjection, to, 0 );
-		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-		mCategoryReal.setAdapter(adapter);
+		mCategoryAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_spinner_item, mCategoryCursor, mCategoryProjection, to, 0 );
+		mCategoryAdapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+		mCategory.setAdapter(mCategoryAdapter);
+		
+		mCategory.setOnLongClickListener(new AdapterView.OnLongClickListener() { 
+	        public boolean onLongClick(View v) { 
+		        Cursor currentItem = (Cursor) mCategory.getSelectedItem();
+		        if( currentItem != null ) {
+		        	 Log.d("", currentItem.getString(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)) + " is long clicked");
+		        	 DialogFragment newFragment = SpinnerEditCategoryDialogFragment.newInstance( currentItem.getInt(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_ID)) );
+		             newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+		        }
+		        return true; 
+		        //throw new RuntimeException("You long clicked an item!");
+	        } 
+	     }); 
 		
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
@@ -164,51 +189,40 @@ public class RecordDetailFragment extends SherlockFragment {
 				DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE,
 				DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, };
 
-		Cursor mRecordCursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
+		Cursor mRecordDetailCursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
 
-		if (mRecordCursor != null)
+		if (mRecordDetailCursor.moveToFirst()) {
 			try {
-				mRecordCursor.moveToFirst();
+				// get categoryType of record
+				String categoryIdOfRecordDetail = mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE));
+				// get the cursor of the referenced category
+				String[] categoryProjection = {  DailyTables.TABLE_CATEGORIES_COLUMN_ID,  DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
+				Cursor categoryCursorOfRecordDetail = getActivity().getContentResolver().query(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + categoryIdOfRecordDetail), categoryProjection, null, null, null);
+				// get the title of the category
+				String categoryTitleOfRecordDetail = null;
+				if(categoryCursorOfRecordDetail.moveToFirst()) {
+					categoryTitleOfRecordDetail = categoryCursorOfRecordDetail.getString(categoryCursorOfRecordDetail.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE));
 				
-				SimpleCursorAdapter mSCA = (SimpleCursorAdapter) mCategoryReal.getAdapter();
-				Cursor mCategoryCursor = mSCA.getCursor();
-				if(mCategoryCursor != null) {
 					
-					String recrodCategorySpecId = mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE));
-					String[] specP = {  DailyTables.TABLE_CATEGORIES_COLUMN_ID,  DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
-					Cursor mCategorySpecCursor = getActivity().getContentResolver().query(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + recrodCategorySpecId), specP, null, null, null);
-					String CategorySpecTitle = null;
-					if(mCategorySpecCursor.moveToFirst()) {
-						CategorySpecTitle = mCategorySpecCursor.getString(mCategorySpecCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE));
-					}
-					
-					for (boolean hasItem = mCategoryCursor.moveToFirst(); hasItem; hasItem = mCategoryCursor.moveToNext()) {
-					    
-					}
-					
-					 for (int i = 0; i < mCategoryReal.getCount(); i++) { 
-						 Cursor theCursor = (Cursor) mCategoryReal.getItemAtPosition(i);
-						 String s = (String) theCursor.getString(theCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)); 
-						 if(s.equalsIgnoreCase(CategorySpecTitle)) { 
-							 mCategoryReal.setSelection(i); 
-							 break;
-						 } 
+//					for (boolean hasItem = categoryCursor.moveToFirst(); hasItem; hasItem = categoryCursor.moveToNext()) {
+//					}
+					 // iterate through the filled spinner and compare with the category of the record
+					 for (int i = 0; i < mCategory.getCount(); i++) { 
+						 Cursor currentCategoryCursor = (Cursor) mCategory.getItemAtPosition(i);
+						 if(currentCategoryCursor != null) {
+							 String currentCategoryTitle = (String) currentCategoryCursor.getString(currentCategoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)); 
+							 if(currentCategoryTitle.equalsIgnoreCase(categoryTitleOfRecordDetail)) { 
+								 // the categories match - select the category
+								 mCategory.setSelection(i); 
+								 break;
+							 } 
+						 }
 					 }
-					 
-					Log.d("t", "succsess");
+					 categoryCursorOfRecordDetail.close();	 
 				}
-				/*
-				 * String category =
-				 * cursor.getString(cursor.getColumnIndexOrThrow(DailyTables
-				 * .COLUMN_CATEGORY));
-				 * 
-				 * for (int i = 0; i < mCategory.getCount(); i++) { String s =
-				 * (String) mCategory.getItemAtPosition(i); if
-				 * (s.equalsIgnoreCase(category)) { mCategory.setSelection(i); } }
-				 */
-
+				
 				/* Convert unix time stamp to mills */
-				long unixTs = mRecordCursor.getInt(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
+				long unixTs = mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
 				Calendar c = Calendar.getInstance();
 				long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
 				c.setTimeInMillis( unixTms );
@@ -217,13 +231,13 @@ public class RecordDetailFragment extends SherlockFragment {
 				Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
 				mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 				
-				mTitleText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
-				mDescriptionText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
-				mAmountText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
-				mBookingTypeText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
-				mPeriodTypeText.setText(mRecordCursor.getString(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
+				mTitleText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
+				mDescriptionText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
+				mAmountText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
+				mBookingTypeText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
+				mPeriodTypeText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
 
-				if (mRecordCursor.getInt(mRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
+				if (mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
 					mPayStateCheck.setChecked(true);
 				} else {
 					mPayStateCheck.setChecked(false);
@@ -232,13 +246,14 @@ public class RecordDetailFragment extends SherlockFragment {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 		// Always close the cursor
-		mRecordCursor.close();
+		mRecordDetailCursor.close();
 	}
 
 	private void saveState() {
 
-		long category = mCategoryReal.getSelectedItemId();
+		long category = mCategory.getSelectedItemId();
 		String titleText = mTitleText.getText().toString();
 		String descriptionText = mDescriptionText.getText().toString();
 		String amountText = mAmountText.getText().toString();
@@ -295,14 +310,33 @@ public class RecordDetailFragment extends SherlockFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        // Handle fragment menu item
         case R.id.menu_record_detail_save:
-            // Handle fragment menu item
         	Log.d("save", "called");
         	requestSave();
             return true;
+        case R.id.menu_record_detail_editDate: {
+        	Log.d("editDate", "called");
+        	
+	    	 //TODO: transmit the column id to fragment and change date.
+        	 int recordId =  Integer.parseInt(recordUri.getLastPathSegment());
+	    	 DialogFragment editDateFragment = EditDateDialogFragment.newInstance( recordId );
+	         editDateFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+	    	   
+        	
+        	return true;
+        }
         default:
             // Not one of ours. Perform default menu processing
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void refreshData() {
+    	if( mCategoryAdapter != null) {
+        	String[] categoryProjection = DailyTables.TABLE_CATEGORIES_AVAILABLE_COLUMS;
+    		Cursor cursor = getActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryProjection, null, null, null);
+    		mCategoryAdapter.changeCursor(cursor);
+    	}
     }
 }

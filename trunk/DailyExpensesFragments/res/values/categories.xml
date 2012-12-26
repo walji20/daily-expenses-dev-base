@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="categories">
+    <string-array name="dummy_categories">
         <item>Category 1</item>
         <item>Category 2</item>
     </string-array>
