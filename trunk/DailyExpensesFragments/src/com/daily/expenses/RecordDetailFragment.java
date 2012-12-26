@@ -64,7 +64,6 @@ public class RecordDetailFragment extends SherlockFragment {
 	private Form mForm;
 	/* GUI Elements */
 	private Spinner mCategory;
-	private DatePicker mUnixDate;
 	private EditText mTitleText;
 	private EditText mDescriptionText;
 	private EditText mAmountText;
@@ -126,7 +125,6 @@ public class RecordDetailFragment extends SherlockFragment {
 		
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
-		mUnixDate = (DatePicker) rootView.findViewById(R.id.detail_datePicker01);
 		mTitleText = (EditText) rootView.findViewById(R.id.detail_title);
 		mDescriptionText = (EditText) rootView.findViewById(R.id.detail_description);
 		mAmountText = (EditText) rootView.findViewById(R.id.detail_amount);
@@ -221,15 +219,6 @@ public class RecordDetailFragment extends SherlockFragment {
 					 categoryCursorOfRecordDetail.close();	 
 				}
 				
-				/* Convert unix time stamp to mills */
-				long unixTs = mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
-				Calendar c = Calendar.getInstance();
-				long unixTms = TimeUnit.SECONDS.toMillis( unixTs );
-				c.setTimeInMillis( unixTms );
-				
-				Log.d("Timestamp from DatePicker: ", "" + unixTs );
-				Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
-				mUnixDate.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 				
 				mTitleText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
 				mDescriptionText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
@@ -259,18 +248,6 @@ public class RecordDetailFragment extends SherlockFragment {
 		String amountText = mAmountText.getText().toString();
 		String bookingTypeText = mBookingTypeText.getText().toString();
 		String periodTypeText = mPeriodTypeText.getText().toString();
-		int unixDateYear = mUnixDate.getYear();
-		int unixDateMonth = mUnixDate.getMonth();
-		int unixDateDay = mUnixDate.getDayOfMonth();
-		
-		
-		Calendar c = Calendar.getInstance();
-		c.set(unixDateYear, unixDateMonth, unixDateDay);
-		// get ms from calendar
-		long unixTms = c.getTimeInMillis();
-		// convert ms to s
-		long unixTs = TimeUnit.MILLISECONDS.toSeconds(unixTms);
-		Log.d("Timestamp from DatePicker: ", "" + unixTs);
 		
 		boolean payState;
 		if (mPayStateCheck.isChecked()) {
@@ -286,7 +263,6 @@ public class RecordDetailFragment extends SherlockFragment {
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingTypeText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, periodTypeText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, category);
-		values.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE, unixTs);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, payState);
 
 		if (recordUri == null) {
