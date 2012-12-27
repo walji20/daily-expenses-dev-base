@@ -115,7 +115,12 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		}
 		case R.id.filter: {
 			LOGD(TAG, "Filter called.");
-			startActivity(new Intent(this, Grid.class));
+			
+			Uri mCurFilter = DailyContentProvider.buildBlocksBetweenDirUri(1355765618, 1355765618);
+			/* set filter for records */
+			((RecordListFragment) getSupportFragmentManager().findFragmentById(R.id.record_list)).setmCurFilter(mCurFilter);
+			/* refill data */
+			((RecordListFragment) getSupportFragmentManager().findFragmentById(R.id.record_list)).fillData();
 			return true;
 		}
 		}
