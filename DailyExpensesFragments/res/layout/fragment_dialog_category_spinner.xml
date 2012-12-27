@@ -6,20 +6,32 @@
     android:padding="16dp"
     tools:context=".RecordDetailFragment" >
 
-    <EditText
-        android:id="@+id/dialog_category_title"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="Title"
-        android:inputType="text" >
-    </EditText>
+        android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/dialog_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/hello_world"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <LinearLayout
+            android:id="@+id/LinearLayout01"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/dialog_category_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:inputType="text" >
+            </EditText>
+
+            <Button
+                android:id="@+id/dialog_category_delete"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Delete" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

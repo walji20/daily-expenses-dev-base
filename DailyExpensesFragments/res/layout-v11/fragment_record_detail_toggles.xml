@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Switch
+        android:id="@+id/detail_bookingType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable"
+        android:textOff="@string/record_detail_incomeOff"
+        android:textOn="@string/record_detail_incomeOn"
+        tools:ignore="NewApi" />
+
+    <Switch
+        android:id="@+id/detail_payState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="payed"
+        android:textOff="@string/record_detail_payStateOff"
+        android:textOn="@string/record_detail_payStateOn"
+        tools:ignore="NewApi" />
+
+</merge>
