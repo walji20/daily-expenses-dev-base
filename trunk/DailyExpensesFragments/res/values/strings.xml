@@ -11,5 +11,9 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_grid">Grid</string>
     <string name="record_detail_editDate">Edit Date</string>
+    <string name="record_detail_incomeOn">Expense</string>
+    <string name="record_detail_incomeOff">Income</string>
+    <string name="record_detail_payStateOn">payed</string>
+    <string name="record_detail_payStateOff">not payed</string>
 
 </resources>
