@@ -8,17 +8,22 @@
         android:id="@+id/detail_bookingType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable"
-        android:textOff="@string/record_detail_incomeOff"
-        android:textOn="@string/record_detail_incomeOn"
+        android:layout_gravity="center"
+        android:checked="true"
+        android:padding="8dip"
+        android:text="@string/record_detail_bookingTypeDesc"
+        android:textOff="@string/record_detail_bookingTypeOff"
+        android:textOn="@string/record_detail_bookingTypeOn"
         tools:ignore="NewApi" />
 
     <Switch
         android:id="@+id/detail_payState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:checked="true"
-        android:text="payed"
+        android:padding="8dip"
+        android:text="@string/record_detail_payStateDesc"
         android:textOff="@string/record_detail_payStateOff"
         android:textOn="@string/record_detail_payStateOn"
         tools:ignore="NewApi" />
