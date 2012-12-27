@@ -1,4 +1,4 @@
-package com.daily.expeneses.dialogs;
+package com.daily.expenses.dialogs;
 
 import com.daily.expenses.R;
 import com.daily.expenses.RecordDetailFragment;

@@ -1,4 +1,4 @@
-package com.daily.expeneses.dialogs;
+package com.daily.expenses.dialogs;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
