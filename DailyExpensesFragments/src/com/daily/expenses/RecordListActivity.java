@@ -15,6 +15,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyDatabaseHelper;
+import com.daily.expenses.util.LogUtils;
+
+import static com.daily.expenses.util.LogUtils.*;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -32,7 +36,7 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
  * {@link RecordListFragment.Callbacks} interface to listen for item selections.
  */
 public class RecordListActivity extends SherlockFragmentActivity implements RecordListFragment.Callbacks {
-
+	private static final String TAG = LogUtils.makeLogTag(DailyDatabaseHelper.class);
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int ACTIVITY_EDIT = 1;
 	private static final int DELETE_ID = Menu.FIRST + 1;
@@ -106,6 +110,11 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			return true;
 		}
 		case R.id.grid: {
+			startActivity(new Intent(this, Grid.class));
+			return true;
+		}
+		case R.id.filter: {
+			LOGD(TAG, "Filter called.");
 			startActivity(new Intent(this, Grid.class));
 			return true;
 		}

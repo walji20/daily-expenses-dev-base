@@ -18,6 +18,7 @@ package com.daily.expenses.util;
 
 import com.daily.expenses.BuildConfig;
 
+import android.R.bool;
 import android.util.Log;
 
 /**
@@ -44,29 +45,29 @@ public class LogUtils {
     }
 
     public static void LOGD(final String tag, String message) {
-        if (Log.isLoggable(tag, Log.DEBUG)) {
+//        if (Log.isLoggable(tag, Log.DEBUG)) {
             Log.d(tag, message);
-        }
+//        }
     }
 
     public static void LOGD(final String tag, String message, Throwable cause) {
-        if (Log.isLoggable(tag, Log.DEBUG)) {
+//        if (Log.isLoggable(tag, Log.DEBUG)) {
             Log.d(tag, message, cause);
-        }
+//        }
     }
 
     public static void LOGV(final String tag, String message) {
         //noinspection PointlessBooleanExpression,ConstantConditions
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+//        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
             Log.v(tag, message);
-        }
+//        }
     }
 
     public static void LOGV(final String tag, String message, Throwable cause) {
         //noinspection PointlessBooleanExpression,ConstantConditions
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+//        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
             Log.v(tag, message, cause);
-        }
+//        }
     }
 
     public static void LOGI(final String tag, String message) {
@@ -92,7 +93,7 @@ public class LogUtils {
     public static void LOGE(final String tag, String message, Throwable cause) {
         Log.e(tag, message, cause);
     }
-
+    
     private LogUtils() {
     }
 }
