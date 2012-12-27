@@ -43,6 +43,7 @@ public class DailyContentProvider extends ContentProvider {
 	private static final int RECORD_ID = 20;
 	private static final int CATEGORIES = 30;
 	private static final int CATEGORY_ID = 40;
+	private static final int RECORDS_BETWEEN = 21;
 
 	private static final String AUTHORITY = "com.daily.expenses.contentprovider";
 
@@ -54,7 +55,9 @@ public class DailyContentProvider extends ContentProvider {
 	/* TODO: implement filter. At the moment no filter is implemented */
 	public static final Uri RECORDS_CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + RECORDS_PATH);
 	public static final Uri CATEGORIES_CONTENT_FILTER_URI = Uri.parse("content://" + AUTHORITY + "/" + CATEGORIES_PATH);
-
+	public static final Uri RECORDS_BETWEEN_URI = Uri.parse("content://" + AUTHORITY + "/" + RECORDS_PATH + "/between");
+	public static final String PATH_BETWEEN = "between";
+	 
 	public static final String RECORDS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/records";
 	public static final String RECORDS_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/record";
 	public static final String CATEGORIES_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/categories";
@@ -66,6 +69,7 @@ public class DailyContentProvider extends ContentProvider {
 		sUriMatcher.addURI(AUTHORITY, RECORDS_PATH + "/#", RECORD_ID);
 		sUriMatcher.addURI(AUTHORITY, CATEGORIES_PATH, CATEGORIES);
 		sUriMatcher.addURI(AUTHORITY, CATEGORIES_PATH + "/#", CATEGORY_ID);
+		sUriMatcher.addURI(AUTHORITY, RECORDS_PATH + "/between/#/#", RECORDS_BETWEEN);
 	}
 
 	@Override
@@ -73,7 +77,12 @@ public class DailyContentProvider extends ContentProvider {
 		database = new DailyDatabaseHelper(getContext());
 		return true;
 	}
-
+	
+	 public static Uri buildBlocksBetweenDirUri(long startTime, long endTime) {
+         return RECORDS_CONTENT_URI.buildUpon().appendPath(PATH_BETWEEN).appendPath(
+                 String.valueOf(startTime)).appendPath(String.valueOf(endTime)).build();
+     }
+	 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		LOGV(TAG, "query(uri=" + uri + ", proj=" + Arrays.toString(projection) + ")");
@@ -109,6 +118,14 @@ public class DailyContentProvider extends ContentProvider {
                 return builder.table(DailyTables.TABLE_RECORDS)
                         .where(DailyTables.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
             }
+            case RECORDS_BETWEEN: {
+            	final List<String> segments = uri.getPathSegments();
+                final String startTime = segments.get(2);
+                final String endTime = segments.get(3);
+                return builder.table(DailyTables.TABLE_RECORDS)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", startTime)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", endTime);
+            }
             case CATEGORIES: {
                 return builder.table(DailyTables.TABLE_CATEGORIES);
             }
@@ -141,6 +158,14 @@ public class DailyContentProvider extends ContentProvider {
                         .table(DailyTables.TABLE_RECORDS)
                         .where(DailyTables.TABLE_RECORDS_COLUMN_ID + "=?", recordId);
             }
+            case RECORDS_BETWEEN: {
+            	final List<String> segments = uri.getPathSegments();
+                final String startTime = segments.get(2);
+                final String endTime = segments.get(3);
+                return builder.table(DailyTables.TABLE_RECORDS)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", startTime)
+                        .where(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", endTime);
+            }
             case CATEGORIES: {
             	return builder
             			.table(DailyTables.TABLE_CATEGORIES);
@@ -163,11 +188,13 @@ public class DailyContentProvider extends ContentProvider {
 		case RECORDS:
 			return RECORDS_CONTENT_TYPE;
 		case RECORD_ID:
+			return RECORDS_CONTENT_ITEM_TYPE;
+		case RECORDS_BETWEEN:
 			return RECORDS_CONTENT_TYPE;
 		case CATEGORIES:
 			return CATEGORIES_CONTENT_TYPE;
 		case CATEGORY_ID:
-			return CATEGORIES_CONTENT_TYPE;
+			return CATEGORIES_CONTENT_ITEM_TYPE;
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}

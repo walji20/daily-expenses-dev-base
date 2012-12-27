@@ -18,7 +18,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
+
+import static com.daily.expenses.util.LogUtils.*;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports
@@ -30,12 +33,15 @@ import com.daily.expenses.database.DailyTables;
  * interface.
  */
 public class RecordListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
+	
+	
+	private static final String TAG = makeLogTag(DailyDatabaseHelper.class);
+	
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
 
 	// If non-null, this is the current filter the user has provided.
-	String mCurFilter;
+	private Uri mCurFilter;
 
 	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_ID };
 	/**
@@ -84,6 +90,14 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 			return false;
 		}
 	};
+
+	public Uri getmCurFilter() {
+		return mCurFilter;
+	}
+	
+	public void setmCurFilter(Uri mCurFilter) {
+		this.mCurFilter = mCurFilter;
+	}
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -192,8 +206,10 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		// First, pick the base URI to use depending on whether we are
 		// currently filtering.
 		Uri baseUri;
-		if (mCurFilter != null) {
-			baseUri = Uri.withAppendedPath(DailyContentProvider.RECORDS_CONTENT_FILTER_URI, Uri.encode(mCurFilter));
+		
+		if (getmCurFilter() != null) {
+			baseUri = getmCurFilter();
+			LOGD(TAG, baseUri.toString());
 		} else {
 			baseUri = DailyContentProvider.RECORDS_CONTENT_URI;
 		}
