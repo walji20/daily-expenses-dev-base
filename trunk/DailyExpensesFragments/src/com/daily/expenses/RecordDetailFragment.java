@@ -1,15 +1,7 @@
 package com.daily.expenses;
 
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,14 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -36,7 +25,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.daily.expeneses.dialogs.EditDateDialogFragment;
 import com.daily.expeneses.dialogs.SpinnerEditCategoryDialogFragment;
 import com.daily.expenses.contentprovider.DailyContentProvider;
-import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
@@ -67,9 +55,9 @@ public class RecordDetailFragment extends SherlockFragment {
 	private EditText mTitleText;
 	private EditText mDescriptionText;
 	private EditText mAmountText;
-	private EditText mBookingTypeText;
+	private CompoundButton mBookingTypeCheck;
 	private EditText mPeriodTypeText;
-	private CheckBox mPayStateCheck;
+	private CompoundButton mPayStateCheck;
 	private Button mRecordEditButton;
 	private SimpleCursorAdapter mCategoryAdapter = null;
 
@@ -82,6 +70,14 @@ public class RecordDetailFragment extends SherlockFragment {
 	public RecordDetailFragment() {
 	}
 	
+	public Uri getRecordUri() {
+		return recordUri;
+	}
+	
+	private void setRecordUri(Uri recordUri) {
+		this.recordUri = recordUri;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -124,30 +120,26 @@ public class RecordDetailFragment extends SherlockFragment {
 	     }); 
 		
 		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
-		mCategory = (Spinner) rootView.findViewById(R.id.detail_categoryType);
 		mTitleText = (EditText) rootView.findViewById(R.id.detail_title);
 		mDescriptionText = (EditText) rootView.findViewById(R.id.detail_description);
 		mAmountText = (EditText) rootView.findViewById(R.id.detail_amount);
-		mBookingTypeText = (EditText) rootView.findViewById(R.id.detail_bookingType);
+		mBookingTypeCheck = (CompoundButton) rootView.findViewById(R.id.detail_bookingType);
 		mPeriodTypeText = (EditText) rootView.findViewById(R.id.detail_periodType);
-		mPayStateCheck = (CheckBox) rootView.findViewById(R.id.detail_payState);
+		mPayStateCheck = (CompoundButton) rootView.findViewById(R.id.detail_payState);
 		mRecordEditButton = (Button) rootView.findViewById(R.id.record_edit_button);
 		
 		/* Add validation */
 		mForm = new Form();
 	    Validate validateTitle = new Validate(mTitleText);
 	    Validate validateAmount = new Validate(mAmountText);
-	    Validate validateBookingType = new Validate(mBookingTypeText);
 	    Validate validatePeriodType = new Validate(mPeriodTypeText);
 	    
 	    validateTitle.addValidator(new NotEmptyValidator(getActivity()));
 	    validateAmount.addValidator(new NotEmptyValidator(getActivity()));
-	    validateBookingType.addValidator(new NotEmptyValidator(getActivity()));
 	    validatePeriodType.addValidator(new NotEmptyValidator(getActivity()));
 	    
 	    mForm.addValidates(validateTitle);
 	    mForm.addValidates(validateAmount);
-	    mForm.addValidates(validateBookingType);
 	    mForm.addValidates(validatePeriodType);
 	    
 		mRecordEditButton.setOnClickListener( new View.OnClickListener() {
@@ -168,12 +160,12 @@ public class RecordDetailFragment extends SherlockFragment {
 		Bundle extras = this.getArguments();
 
 		// Check from the saved Instance
-		recordUri = (savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE);
+		setRecordUri((savedInstanceState == null) ? null : (Uri) savedInstanceState.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE));
 
 		// Or passed from the other activity
 		if (extras != null) {
-			recordUri = (Uri) extras.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE);
-			fillData(recordUri);
+			setRecordUri((Uri) extras.getParcelable(DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE));
+			fillData(getRecordUri());
 		} else {
 			Toast.makeText(getActivity(), "New record.", Toast.LENGTH_SHORT).show();
 		}
@@ -182,12 +174,12 @@ public class RecordDetailFragment extends SherlockFragment {
 	}
 
 	private void fillData(Uri uri) {
-		Log.d("todo", "todoUri: " + recordUri);
+		Log.d("todo", "todoUri: " + getRecordUri());
 		String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT,
 				DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE,
 				DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, };
 
-		Cursor mRecordDetailCursor = getActivity().getContentResolver().query(recordUri, projection, null, null, null);
+		Cursor mRecordDetailCursor = getActivity().getContentResolver().query(getRecordUri(), projection, null, null, null);
 
 		if (mRecordDetailCursor.moveToFirst()) {
 			try {
@@ -223,9 +215,14 @@ public class RecordDetailFragment extends SherlockFragment {
 				mTitleText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE)));
 				mDescriptionText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
 				mAmountText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
-				mBookingTypeText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)));
 				mPeriodTypeText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
-
+				
+				if (mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)) == 1) {
+					mBookingTypeCheck.setChecked(true);
+				} else {
+					mBookingTypeCheck.setChecked(false);
+				}
+				
 				if (mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE)) == 1) {
 					mPayStateCheck.setChecked(true);
 				} else {
@@ -246,8 +243,14 @@ public class RecordDetailFragment extends SherlockFragment {
 		String titleText = mTitleText.getText().toString();
 		String descriptionText = mDescriptionText.getText().toString();
 		String amountText = mAmountText.getText().toString();
-		String bookingTypeText = mBookingTypeText.getText().toString();
 		String periodTypeText = mPeriodTypeText.getText().toString();
+		
+		boolean bookingType;
+		if (mBookingTypeCheck.isChecked()) {
+			bookingType = true;
+		} else {
+			bookingType = false;
+		}
 		
 		boolean payState;
 		if (mPayStateCheck.isChecked()) {
@@ -260,17 +263,17 @@ public class RecordDetailFragment extends SherlockFragment {
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_TITLE, titleText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, descriptionText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT, amountText);
-		values.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingTypeText);
+		values.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, bookingType);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, periodTypeText);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, category);
 		values.put(DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, payState);
 
-		if (recordUri == null) {
+		if (getRecordUri() == null) {
 			// New record
-			recordUri = getActivity().getContentResolver().insert(DailyContentProvider.RECORDS_CONTENT_URI, values);
+			setRecordUri(getActivity().getContentResolver().insert(DailyContentProvider.RECORDS_CONTENT_URI, values));
 		} else {
 			// Update record
-			getActivity().getContentResolver().update(recordUri, values, null, null);
+			getActivity().getContentResolver().update(getRecordUri(), values, null, null);
 		}
 	}
 
@@ -295,7 +298,7 @@ public class RecordDetailFragment extends SherlockFragment {
         	Log.d("editDate", "called");
         	
 	    	 //TODO: transmit the column id to fragment and change date.
-        	 int recordId =  Integer.parseInt(recordUri.getLastPathSegment());
+        	 int recordId =  Integer.parseInt(getRecordUri().getLastPathSegment());
 	    	 DialogFragment editDateFragment = EditDateDialogFragment.newInstance( recordId );
 	         editDateFragment.show(getActivity().getSupportFragmentManager(), "dialog");
 	    	   
@@ -313,6 +316,7 @@ public class RecordDetailFragment extends SherlockFragment {
         	String[] categoryProjection = DailyTables.TABLE_CATEGORIES_AVAILABLE_COLUMS;
     		Cursor cursor = getActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryProjection, null, null, null);
     		mCategoryAdapter.changeCursor(cursor);
+    		fillData(getRecordUri());
     	}
     }
 }

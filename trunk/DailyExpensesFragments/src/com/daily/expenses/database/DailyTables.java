@@ -69,8 +69,8 @@ public class DailyTables {
 			  + TABLE_CATEGORIES_COLUMN_ID + " integer primary key autoincrement, " 
 			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + " int default '0' not null, " 
 			  + TABLE_CATEGORIES_COLUMN_TITLE + " text not null, " 
-			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + " double not null, " 
-			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + " int not null " 
+			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + " text default '' not null, " 
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + " int default '1' not null " 
 			  + ");";
 	  
 	  // Database dummy items statement
