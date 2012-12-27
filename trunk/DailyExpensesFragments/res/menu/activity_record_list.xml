@@ -13,5 +13,12 @@
         android:showAsAction="ifRoom|withText"
         android:title="Grid">
     </item>
+    
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/action_search"
+        android:showAsAction="ifRoom|withText"
+        android:title="Filter">
+    </item>
 
 </menu>
