@@ -34,6 +34,7 @@ import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.EditDateDialogFragment;
 import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
 import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment;
+import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment.SpinnerEditCategoryDialogListener;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
 import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
@@ -43,7 +44,7 @@ import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidat
  * contained in a {@link RecordListActivity} in two-pane mode (on tablets) or a
  * {@link RecordDetailActivity} on handsets.
  */
-public class RecordDetailFragment extends SherlockFragment implements EditDateDialogFragment.EditDateDialogListener {
+public class RecordDetailFragment extends SherlockFragment implements EditDateDialogFragment.EditDateDialogListener, SpinnerEditCategoryDialogFragment.SpinnerEditCategoryDialogListener {
 	
 	private static final String TAG = makeLogTag(RecordDetailFragment.class);
 	/**
@@ -103,11 +104,16 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 			 */
 		}
 		if (savedInstanceState != null) {
-			RecordDetailFragment df = (RecordDetailFragment) getActivity().getSupportFragmentManager().findFragmentByTag("RecordDetailFragment"); // "rdf" is the tag used when you add the RecordDetailFragment to the activity
-			EditDateDialogFragment s = (EditDateDialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag("EditDateDialogFragment"); // "tag" is the string set as the tag for the dialog when you show it
-			if (s != null) {
+			
+			EditDateDialogFragment ed = (EditDateDialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag("EditDateDialogFragment"); // "tag" is the string set as the tag for the dialog when you show it
+			if (ed != null) {
 				// the dialog exists so update its listener
-				s.setListener(this);
+				ed.setListener(this);
+			}
+			SpinnerEditCategoryDialogFragment spe = (SpinnerEditCategoryDialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag("SpinnerEditCategoryDialogFragment"); // "tag" is the string set as the tag for the dialog when you show it
+			if (spe != null) {
+				// the dialog exists so update its listener
+				spe.setListener(this);
 			}
 		}
 	}
@@ -129,8 +135,12 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 		        Cursor currentItem = (Cursor) mCategory.getSelectedItem();
 		        if( currentItem != null ) {
 		        	 Log.d("", currentItem.getString(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)) + " is long clicked");
-		        	 DialogFragment newFragment = SpinnerEditCategoryDialogFragment.newInstance( currentItem.getInt(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_ID)) );
-		             newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+		        	 
+		        	 RecordDetailFragment df = (RecordDetailFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.record_detail_container); // "rdf" is the tag used when you add the RecordDetailFragment to the activity
+		        	 
+		        	 SpinnerEditCategoryDialogFragment newFragment = SpinnerEditCategoryDialogFragment.newInstance( currentItem.getInt(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_ID)), currentItem.getString(currentItem.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE)) );
+		        	 newFragment.setListener((SpinnerEditCategoryDialogListener) df);
+		        	 newFragment.show(getActivity().getSupportFragmentManager(), "SpinnerEditCategoryDialogFragment");
 		        }
 		        return true; 
 		        //throw new RuntimeException("You long clicked an item!");
@@ -334,12 +344,16 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
         	String[] categoryProjection = DailyTables.TABLE_CATEGORIES_AVAILABLE_COLUMS;
     		Cursor cursor = getActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryProjection, null, null, null);
     		mCategoryAdapter.changeCursor(cursor);
-    		fillData(getRecordUri());
+    		
+    		if(getRecordUri() != null) {
+    			/* null if new record */
+    			fillData(getRecordUri());
+    		}
     	}
     }
 
 	@Override
-	public void onDialogPositiveClick(int year, int month, int day) {
+	public void onEditDateDialogPositiveClick(int year, int month, int day) {
 		LOGD(TAG, "Overriden Dialog confirmed");
 		
 		Calendar c = Calendar.getInstance();
@@ -353,9 +367,72 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 		
 		Log.d("Timestamp from DatePicker: ", "" + unixTs);
 	}
+	
+	@Override
+	public void onEditDateDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
+	public void onSpinnerEditCategoryDialogNegativeClick(DialogFragment dialog) {
 		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void onSpinnerEditCategoryDialogNeutralClick(int categoryId, String categoryTitle) {
+		
+			Uri currentRecordUri = getRecordUri();
+			if(currentRecordUri == null) {
+				//New Record
+				ContentValues categoryValues = new ContentValues();
+				categoryValues.put(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE, categoryTitle);
+				Uri categorySavedUri = getActivity().getContentResolver().insert(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryValues);
+				int categorySavedId = Integer.parseInt(categorySavedUri.getLastPathSegment());
+				if( categorySavedId > -1 ) {
+					mCategory.setSelection(categorySavedId);
+				}
+				
+			} else {
+				//Existing Record
+				int currentRecordId = Integer.parseInt(currentRecordUri.getLastPathSegment());
+				if( currentRecordId > -1 ) {
+					ContentValues categoryValues = new ContentValues();
+					categoryValues.put(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE, categoryTitle);
+					Uri categorySavedUri = getActivity().getContentResolver().insert(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryValues);
+					int categorySavedId = Integer.parseInt(categorySavedUri.getLastPathSegment());
+					if( categorySavedId > -1 ) {
+						ContentValues recordValues = new ContentValues();
+						recordValues.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, categorySavedId);
+						getActivity().getContentResolver().update(Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/" + currentRecordId), recordValues, null, null);
+					}
+				}
+			}
+				
+			
+			refreshData();
+		
+	}
+
+	@Override
+	public void onSpinnerEditCategoryDialogPositiveClick(int categoryId, String categoryTitle) {
+		
+		Uri categoryUri = Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + categoryId);
+		
+		ContentValues values = new ContentValues();
+		values.put(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE, categoryTitle);
+		getActivity().getContentResolver().update(categoryUri, values, null, null);
+		
+		refreshData();
+	}
+
+	@Override
+	public void onSpinnerEditCategoryDialogDeleteClick(int categoryId) {
+
+		getActivity().getContentResolver().delete(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + categoryId), null, null);
+		refreshData();
+		
+	}
+
 }

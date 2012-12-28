@@ -20,28 +20,32 @@ public class EditDateDialogFragment extends DialogFragment {
 	public DatePicker mDatePicker;
 	long currentUnixTime;
 	
+	/* The activity that creates an instance of this dialog fragment must
+	 * implement this interface in order to receive event callbacks.
+	 * Each method passes the DialogFragment in case the host needs to query it. */
+	public interface EditDateDialogListener {
+		public void onEditDateDialogPositiveClick(int year, int month, int day);
+		public void onEditDateDialogNegativeClick(DialogFragment dialog);
+	}
+	
 	// Use this instance of the interface to deliver action events
 	EditDateDialogListener mListener = new EditDateDialogListener() {
 		
 		@Override
-		public void onDialogPositiveClick(int year, int month, int day) {
+		public void onEditDateDialogPositiveClick(int year, int month, int day) {
 			//Should always overridden by interface implementing class
 		}
 		
 		@Override
-		public void onDialogNegativeClick(DialogFragment dialog) {
+		public void onEditDateDialogNegativeClick(DialogFragment dialog) {
 			//Should always overridden by interface implementing class
 		}
 	};
 	 
-	/* The activity that creates an instance of this dialog fragment must
-     * implement this interface in order to receive event callbacks.
-     * Each method passes the DialogFragment in case the host needs to query it. */
-    public interface EditDateDialogListener {
-        public void onDialogPositiveClick(int year, int month, int day);
-        public void onDialogNegativeClick(DialogFragment dialog);
-    }
     
+	public void setListener(EditDateDialogListener listener) {
+		mListener = listener;
+	}
 	
 	public static EditDateDialogFragment newInstance( long currentUnixTime ) {
 		EditDateDialogFragment p = new EditDateDialogFragment();
@@ -57,23 +61,6 @@ public class EditDateDialogFragment extends DialogFragment {
 		super.onCreate(savedInstanceState);
 	}
 	
-	public void onAttach(SherlockActivity activity) {
-		
-		super.onAttach(activity);
-		
-		try {
-            // Instantiate the EditDateDialogListener so we can send events to the host
-            mListener = (EditDateDialogListener) activity;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString() + " must implement EditDateDialogListener");
-        }
-		
-	}
-	
-	public void setListener(EditDateDialogListener listener) {
-	     mListener = listener;
-	}
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -102,7 +89,7 @@ public class EditDateDialogFragment extends DialogFragment {
 				Log.d("", "Dialog confirmed");
 				
 				//Return Y, M, D
-				mListener.onDialogPositiveClick(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth());
+				mListener.onEditDateDialogPositiveClick(mDatePicker.getYear(), mDatePicker.getMonth(), mDatePicker.getDayOfMonth());
 				
 			}
 		}).setNegativeButton("Abort", new DialogInterface.OnClickListener() {
