@@ -17,18 +17,42 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.daily.expenses.R;
 import com.daily.expenses.RecordDetailFragment;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
 
 public class EditDateDialogFragment extends DialogFragment {
-	DatePicker mDatePicker;
+	public DatePicker mDatePicker;
 	int mCurrentRecordId;
 	/* must be hold in class to communicate with listeners */
 	Cursor mCurrentRecordCursor = null;
 	ContentResolver mCurrentRecordContentResolver = null;
-
+	
+	// Use this instance of the interface to deliver action events
+	EditDateDialogListener mListener = new EditDateDialogListener() {
+		
+		@Override
+		public void onDialogPositiveClick(DialogFragment dialog) {
+			//Should always overridden by interface implementing class
+		}
+		
+		@Override
+		public void onDialogNegativeClick(DialogFragment dialog) {
+			//Should always overridden by interface implementing class
+		}
+	};
+	 
+	/* The activity that creates an instance of this dialog fragment must
+     * implement this interface in order to receive event callbacks.
+     * Each method passes the DialogFragment in case the host needs to query it. */
+    public interface EditDateDialogListener {
+        public void onDialogPositiveClick(DialogFragment dialog);
+        public void onDialogNegativeClick(DialogFragment dialog);
+    }
+    
+	
 	public static EditDateDialogFragment newInstance( int currentCategoryId ) {
 		EditDateDialogFragment p = new EditDateDialogFragment();
 		Bundle args = new Bundle();
@@ -42,7 +66,25 @@ public class EditDateDialogFragment extends DialogFragment {
 		mCurrentRecordId = getArguments().getInt("currentRecordId");
 		super.onCreate(savedInstanceState);
 	}
-
+	
+	public void onAttach(SherlockActivity activity) {
+		
+		super.onAttach(activity);
+		
+		try {
+            // Instantiate the EditDateDialogListener so we can send events to the host
+            mListener = (EditDateDialogListener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString() + " must implement EditDateDialogListener");
+        }
+		
+	}
+	
+	public void setListener(EditDateDialogListener listener) {
+	     mListener = listener;
+	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -55,7 +97,6 @@ public class EditDateDialogFragment extends DialogFragment {
 		
 		if(mCurrentRecordCursor.moveToFirst()) {
 			
-			
 			/* Convert unix time stamp to mills */
 			long unixTs = mCurrentRecordCursor.getInt(mCurrentRecordCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
 			Calendar c = Calendar.getInstance();
@@ -66,11 +107,13 @@ public class EditDateDialogFragment extends DialogFragment {
 			Log.d("converted Time symbols from DatePicker: ", "" + c.get(Calendar.YEAR) + " " + c.get(Calendar.MONTH) + " " + c.get(Calendar.DAY_OF_MONTH));
 			mDatePicker.updateDate(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 			
-			return new AlertDialog.Builder(getActivity()).setTitle("Set Date...").setView(v).setCancelable(true).setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(getActivity()).setTitle("Set Date...").setView(v).setCancelable(true)
+				.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d("", "Dialog confirmed");
 					
+					mListener.onDialogPositiveClick(EditDateDialogFragment.this);
 					
 					int unixDateYear = mDatePicker.getYear();
 					int unixDateMonth = mDatePicker.getMonth();
@@ -101,8 +144,8 @@ public class EditDateDialogFragment extends DialogFragment {
 			}).setNegativeButton("Abort", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					dialog.cancel();
 					Log.d("", "Dialog abort");
+					dialog.cancel();
 				}
 			}).create();
 		} else {

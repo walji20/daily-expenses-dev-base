@@ -4,12 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 
@@ -26,7 +23,8 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
 	@SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
+		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_detail);
         
      
