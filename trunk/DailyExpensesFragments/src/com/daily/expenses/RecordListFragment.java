@@ -1,26 +1,26 @@
 package com.daily.expenses;
 
+import static com.daily.expenses.util.LogUtils.LOGD;
+import static com.daily.expenses.util.LogUtils.makeLogTag;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
-
+import com.daily.expenses.dialogs.SelectDateDialogFragment;
 import static com.daily.expenses.util.LogUtils.*;
 
 /**
@@ -39,7 +39,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	
 	// This is the Adapter being used to display the list's data.
 	SimpleCursorAdapter mAdapter;
-
+    
 	// If non-null, this is the current filter the user has provided.
 	private Uri mCurFilter;
 
@@ -111,10 +111,6 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		super.onCreate(savedInstanceState);
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true); 
-		this.fillData();
-	}
-
-	public void fillData() {
 		/*
 		 * Red[128225] Ensure compatibility for pre API 11 devices - list
 		 * highlighting
@@ -130,6 +126,12 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		mAdapter = new SimpleCursorAdapter(this.getActivity(), layout, null, RECORDS_OVERVIEW_PROJECTION, to, 0);
 		setListAdapter(mAdapter);
 
+	}
+
+	public void fillData() {
+		if( mAdapter != null ) {
+			getActivity().getSupportLoaderManager().restartLoader(0, null, this);
+		}
 	}
 
 	@Override
@@ -232,4 +234,27 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		// longer using it.
 		mAdapter.swapCursor(null);
 	}
+	
+	@Override
+	 public boolean onOptionsItemSelected(MenuItem item) {
+	        switch (item.getItemId()) {
+	        case R.id.filter: {
+				 LOGD(TAG, "Filter called.");
+				
+				 DialogFragment newFragment = SelectDateDialogFragment.newInstance();
+				 newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+				 getSherlockActivity().getSupportActionBar().getDisplayOptions();
+				 
+				 return true;
+			}
+	        case R.id.filter_delete: {
+	        	
+	        	return true;
+	        }
+	       
+	        default:
+	        // Not one of ours. Perform default menu processing
+	        return super.onOptionsItemSelected(item);
+	       }
+	 }
 }

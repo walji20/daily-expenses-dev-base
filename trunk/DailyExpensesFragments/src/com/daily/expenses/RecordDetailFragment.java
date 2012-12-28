@@ -1,5 +1,7 @@
 package com.daily.expenses;
 
+import static com.daily.expenses.util.LogUtils.LOGD;
+import static com.daily.expenses.util.LogUtils.makeLogTag;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -25,18 +27,20 @@ import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.EditDateDialogFragment;
+import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
 import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
 import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
-
 
 /**
  * A fragment representing a single Item detail screen. This fragment is either
  * contained in a {@link RecordListActivity} in two-pane mode (on tablets) or a
  * {@link RecordDetailActivity} on handsets.
  */
-public class RecordDetailFragment extends SherlockFragment {
+public class RecordDetailFragment extends SherlockFragment implements EditDateDialogFragment.EditDateDialogListener {
+	
+	private static final String TAG = makeLogTag(RecordDetailFragment.class);
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -92,6 +96,14 @@ public class RecordDetailFragment extends SherlockFragment {
 			 * DailyContentProvider.RECORDS_CONTENT_ITEM_TYPE));
 			 */
 		}
+		  if (savedInstanceState != null) {
+			    RecordDetailFragment df = (RecordDetailFragment) getActivity().getSupportFragmentManager().findFragmentByTag("RecordDetailFragment"); // "rdf" is the tag used when you add the RecordDetailFragment to the activity
+			    EditDateDialogFragment s = (EditDateDialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag("EditDateDialogFragment"); // "tag" is the string set as the tag for the dialog when you show it
+			    if (s != null) {
+			                   // the dialog exists so update its listener
+			        s.setListener(this);
+			    }
+			}
 	}
 	
 	@Override
@@ -299,10 +311,11 @@ public class RecordDetailFragment extends SherlockFragment {
         	
 	    	 //TODO: transmit the column id to fragment and change date.
         	 int recordId =  Integer.parseInt(getRecordUri().getLastPathSegment());
-	    	 DialogFragment editDateFragment = EditDateDialogFragment.newInstance( recordId );
-	         editDateFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+	    	 //DialogFragment editDateFragment = EditDateDialogFragment.newInstance( recordId );
+        	 EditDateDialogFragment editDateFragment = EditDateDialogFragment.newInstance( recordId );
+	    	 editDateFragment.setListener((EditDateDialogListener) this);
+	         editDateFragment.show(getActivity().getSupportFragmentManager(), "EditDateDialogFragment");
 	    	   
-        	
         	return true;
         }
         default:
@@ -319,4 +332,18 @@ public class RecordDetailFragment extends SherlockFragment {
     		fillData(getRecordUri());
     	}
     }
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		LOGD(TAG, "Overriden Dialog confirmed");
+		int year = ((EditDateDialogFragment) dialog).mDatePicker.getYear();
+		LOGD(TAG, "Year of DatePicker: " + year);
+		
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
 }

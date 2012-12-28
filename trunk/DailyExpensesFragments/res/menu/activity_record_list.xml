@@ -6,19 +6,24 @@
         android:showAsAction="ifRoom|withText"
         android:title="Insert">
     </item>
-
     <item
         android:id="@+id/grid"
         android:icon="@drawable/device_access_dial_pad"
         android:showAsAction="ifRoom|withText"
         android:title="Grid">
     </item>
-    
     <item
         android:id="@+id/filter"
         android:icon="@drawable/action_search"
         android:showAsAction="ifRoom|withText"
         android:title="Filter">
+    </item>
+    <item
+        android:id="@+id/filter_delete"
+        android:enabled="false"
+        android:icon="@drawable/images_rotate_left"
+        android:showAsAction="always"
+        android:title="Delete Filter">
     </item>
 
 </menu>

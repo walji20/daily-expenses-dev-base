@@ -19,7 +19,6 @@ import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.util.LogUtils;
 
 import static com.daily.expenses.util.LogUtils.*;
-
 /**
  * An activity representing a list of Items. This activity has different
  * presentations for handset and tablet-size devices. On handsets, the activity
@@ -111,16 +110,6 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		}
 		case R.id.grid: {
 			startActivity(new Intent(this, Grid.class));
-			return true;
-		}
-		case R.id.filter: {
-			LOGD(TAG, "Filter called.");
-			
-			Uri mCurFilter = DailyContentProvider.buildBlocksBetweenDirUri(1355765618, 1355765618);
-			/* set filter for records */
-			((RecordListFragment) getSupportFragmentManager().findFragmentById(R.id.record_list)).setmCurFilter(mCurFilter);
-			/* refill data */
-			((RecordListFragment) getSupportFragmentManager().findFragmentById(R.id.record_list)).fillData();
 			return true;
 		}
 		}
