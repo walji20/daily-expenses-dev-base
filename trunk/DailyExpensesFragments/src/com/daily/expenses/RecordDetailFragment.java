@@ -4,6 +4,7 @@ import static com.daily.expenses.util.LogUtils.LOGD;
 import static com.daily.expenses.util.LogUtils.makeLogTag;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
@@ -196,13 +197,17 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 			fillData(getRecordUri());
 		} else {
 			Toast.makeText(getActivity(), "New record.", Toast.LENGTH_SHORT).show();
+			
+			//A new Record doesn't have filled date values in database so fill with current time
+			Calendar c = GregorianCalendar.getInstance();
+			mUnixTime = TimeUnit.MILLISECONDS.toSeconds(c.getTimeInMillis());
 		}
 
 		return rootView;
 	}
 
 	private void fillData(Uri uri) {
-		Log.d("todo", "todoUri: " + getRecordUri());
+		Log.d(TAG, "recordUri: " + getRecordUri());
 		String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT,
 				DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE, DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE,
 				DailyTables.TABLE_RECORDS_COLUMN_PAY_STATE, };
@@ -244,7 +249,15 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 				mDescriptionText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_DESCRIPTION)));
 				mAmountText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT)));
 				mPeriodTypeText.setText(mRecordDetailCursor.getString(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_PERIOD_TYPE)));
-				mUnixTime = mRecordDetailCursor.getLong(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
+				
+				if( mRecordDetailCursor.getLong(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE)) > 0 ) {
+					//Date from existing Record
+					mUnixTime = mRecordDetailCursor.getLong(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE));
+				} else {
+					//A new Record doesn't have filled date values in database so fill with current time
+					Calendar c = GregorianCalendar.getInstance();
+					mUnixTime = TimeUnit.MILLISECONDS.toSeconds(c.getTimeInMillis());
+				}
 				if (mRecordDetailCursor.getInt(mRecordDetailCursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE)) == 1) {
 					mBookingTypeCheck.setChecked(true);
 				} else {
@@ -299,10 +312,12 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 
 		if (getRecordUri() == null) {
 			// New record
-			setRecordUri(getActivity().getContentResolver().insert(DailyContentProvider.RECORDS_CONTENT_URI, values));
+			 Uri recordUrl = getActivity().getContentResolver().insert(DailyContentProvider.RECORDS_CONTENT_URI, values);
+			 int recordId = Integer.parseInt(recordUrl.getLastPathSegment());
+			 setRecordUri(Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/" + recordId));
 		} else {
 			// Update record
-			getActivity().getContentResolver().update(getRecordUri(), values, null, null);
+			 getActivity().getContentResolver().update(getRecordUri(), values, null, null);
 		}
 	}
 

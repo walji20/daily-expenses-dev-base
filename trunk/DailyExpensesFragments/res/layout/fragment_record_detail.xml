@@ -29,7 +29,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:hint="Title"
-                android:imeOptions="actionNext" >
+                android:imeOptions="actionNext"
+                android:singleLine="true" >
             </EditText>
 
             <EditText
@@ -51,7 +52,6 @@
                     android:id="@+id/detail_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_weight="3"
                     android:gravity="top"
                     android:hint="Amount"
                     android:imeOptions="actionNext"
@@ -78,7 +78,6 @@
                     android:id="@+id/detail_periodType"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1"
                     android:gravity="top"
                     android:hint="Period Type"
                     android:imeOptions="actionNext"
@@ -90,7 +89,8 @@
                 android:id="@+id/record_edit_button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Confirm" >
+                android:text="Confirm" 
+                android:visibility="invisible">
             </Button>
         </LinearLayout>
     </ScrollView>
