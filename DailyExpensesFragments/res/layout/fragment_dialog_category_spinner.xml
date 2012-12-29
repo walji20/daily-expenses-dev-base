@@ -20,16 +20,16 @@
                 android:id="@+id/dialog_category_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Title"
+                android:hint="@string/dialog_category_title"
                 android:inputType="text" >
             </EditText>
 
             <Button
                 android:id="@+id/dialog_category_delete"
-                android:layout_width="75dp"
+                android:layout_width="175dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Delete" />
+                android:text="@string/dialog_category_delete" />
 
         </LinearLayout>
     </ScrollView>

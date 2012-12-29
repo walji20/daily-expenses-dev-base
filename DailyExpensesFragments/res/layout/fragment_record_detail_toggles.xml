@@ -7,12 +7,14 @@
         android:id="@+id/detail_bookingType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:text="@string/record_detail_bookingTypeOn" />
 
     <CheckBox
         android:id="@+id/detail_payState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:checked="true"
         android:text="@string/record_detail_payStateOn" />
 

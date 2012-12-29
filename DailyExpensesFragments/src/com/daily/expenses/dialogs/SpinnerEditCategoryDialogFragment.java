@@ -101,15 +101,6 @@ public class SpinnerEditCategoryDialogFragment extends DialogFragment {
 				
 				mListener.onSpinnerEditCategoryDialogDeleteClick(mCurrentCategoryId);
 				getDialog().cancel();
-				
-//				if( mCurrentCategoryId > -1 ) {
-//					mContentResolver.delete(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + mCurrentCategoryId), null, null);
-//					
-//					if(attachedFragment != null) {
-//						attachedFragment.refreshData();
-//					}
-//					getDialog().cancel();
-//				}
 			}
 				
 		});
@@ -117,21 +108,22 @@ public class SpinnerEditCategoryDialogFragment extends DialogFragment {
 			
 			mCategoryTitle.setText( mCurrentCategoryTitle );
 			
-			return new AlertDialog.Builder(getActivity()).setTitle("Category Name...").setView(v).setCancelable(true).setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+			return new AlertDialog.Builder(getActivity()).setTitle("Category Name...").setView(v).setCancelable(true)
+				.setPositiveButton(R.string.dialog_category_PositiveButton, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d("", "Dialog confirmed");
 					mListener.onSpinnerEditCategoryDialogPositiveClick(mCurrentCategoryId, mCurrentCategoryTitle);
 					
 				}
-			}).setNegativeButton("Abort", new DialogInterface.OnClickListener() {
+			}).setNegativeButton(R.string.dialog_category_NegativeButton, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d("", "Dialog abort");
 					
 					dialog.cancel();
 				}
-			}).setNeutralButton("As new Category", new DialogInterface.OnClickListener() {
+			}).setNeutralButton(R.string.dialog_category_NeutralButton, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d("", "Dialog neutral");

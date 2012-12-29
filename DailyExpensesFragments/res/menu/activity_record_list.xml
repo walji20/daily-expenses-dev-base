@@ -6,11 +6,13 @@
         android:showAsAction="ifRoom|withText"
         android:title="Insert">
     </item>
+    <!-- Temporary invisible -->
     <item
         android:id="@+id/grid"
         android:icon="@drawable/device_access_dial_pad"
         android:showAsAction="ifRoom|withText"
-        android:title="Grid">
+        android:title="Grid"
+        android:visible="false">
     </item>
     <item
         android:id="@+id/filter"
@@ -18,12 +20,15 @@
         android:showAsAction="ifRoom|withText"
         android:title="Filter">
     </item>
+
+    <!-- Temporary invisible -->
     <item
         android:id="@+id/filter_delete"
         android:enabled="false"
         android:icon="@drawable/images_rotate_left"
         android:showAsAction="always"
-        android:title="Delete Filter">
+        android:title="Delete Filter"
+        android:visible="false">
     </item>
 
 </menu>

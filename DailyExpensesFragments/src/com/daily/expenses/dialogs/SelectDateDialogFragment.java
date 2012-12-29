@@ -56,6 +56,19 @@ public class SelectDateDialogFragment extends DialogFragment {
 					int unixDateDay = currentDatePicker.getDayOfMonth();
 					
 					Calendar c = Calendar.getInstance();
+					//Set the maximum range of the day
+					if(currentDatePicker.equals(mDatePickerFrom)) {
+						//For from DatePicker to min e.g. 00:00:
+						c.set(Calendar.SECOND, c.getMinimum(Calendar.SECOND));
+						c.set(Calendar.MINUTE, c.getMinimum(Calendar.MINUTE));
+						c.set(Calendar.HOUR, c.getMinimum(Calendar.HOUR));
+					}
+					if(currentDatePicker.equals(mDatePickerTo)) {
+						//For from DatePicker to min e.g. 23:59:
+						c.set(Calendar.SECOND, c.getMaximum(Calendar.SECOND));
+						c.set(Calendar.MINUTE, c.getMaximum(Calendar.MINUTE));
+						c.set(Calendar.HOUR, c.getMaximum(Calendar.HOUR));
+					}
 					c.set(unixDateYear, unixDateMonth, unixDateDay);
 					// get ms from calendar
 					long unixTms = c.getTimeInMillis();

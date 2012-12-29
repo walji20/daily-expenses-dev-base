@@ -2,20 +2,25 @@
 <resources>
 
     <string name="app_name">Daily Expenses</string>
-    <string name="title_item_detail">Item Detail</string>
-    <string name="loading">Loading..</string>
     <string name="hello_world">Hello world!</string>
-    <string name="record_detail_save">Save</string>
-    <string name="title_activity_item_insert">Insert Item</string>
+    <string name="title_item_detail">Record Detail</string>
+    <string name="loading">Loading..</string>
+    <string name="title_activity_item_insert">Insert Record</string>
     <string name="title_activity_contacts">ContactsActivity</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_grid">Grid</string>
+    <string name="record_detail_save">Save</string>
     <string name="record_detail_editDate">Edit Date</string>
     <string name="record_detail_bookingTypeDesc">Booking Type</string>
     <string name="record_detail_bookingTypeOn">Expense</string>
     <string name="record_detail_bookingTypeOff">Income</string>
     <string name="record_detail_payStateDesc">Pay State</string>
-    <string name="record_detail_payStateOn">payed</string>
-    <string name="record_detail_payStateOff">not payed</string>
+    <string name="record_detail_payStateOn">paid</string>
+    <string name="record_detail_payStateOff">not paid</string>
+    <string name="dialog_category_delete">Delete</string>
+    <string name="dialog_category_title">Title</string>
+    <string name="dialog_category_PositiveButton">Confirm</string>
+    <string name="dialog_category_NegativeButton">Abort</string>
+    <string name="dialog_category_NeutralButton">As new Category</string>
 
 </resources>
