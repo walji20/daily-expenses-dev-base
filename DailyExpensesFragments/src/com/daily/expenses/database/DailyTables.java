@@ -134,6 +134,11 @@ public class DailyTables {
 		database.execSQL(TABLE_CATEGORIES_CREATE);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
 		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA);
 		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA2);
 		Log.d(DailyTables.class.getName(), "Created and filled database.");

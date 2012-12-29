@@ -3,14 +3,16 @@ package com.daily.expenses;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.internal.widget.IcsAdapterView.AdapterContextMenuInfo;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -66,8 +68,9 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		}
 
 		ListView list = (ListView) findViewById(android.R.id.list);
-		this.registerForContextMenu(list);
-		list.setOnCreateContextMenuListener(this);
+		//this.registerForContextMenu(list);
+		//list.setOnCreateContextMenuListener(this);
+		registerForContextMenu(list);
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
 
@@ -148,21 +151,38 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		Log.d("onCreateContextMenu", "onCreateContextMenu called");
 		menu.add(0, DELETE_ID, 0, "Delete");
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
+		Log.d("onContextItemSelected", "onContextItemSelected called");
 		Log.d("id", "" + item.getItemId());
 		switch (item.getItemId()) {
 		case DELETE_ID:
+			
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-			Uri uri = Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/" + info.id);
+		    int index = (int) info.id;
+		    
+			Uri uri = Uri.parse(DailyContentProvider.RECORDS_CONTENT_URI + "/" + index);
 			getContentResolver().delete(uri, null, null);
 			Log.d("", "Delete selected");
+			//TODO: Only detach if different
+			if(recordDetailFragment != null) {
+				// Only if fragment is attached
+				getSupportFragmentManager().beginTransaction().detach(recordDetailFragment).commit();
+			}
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		Log.d("onContextItemSelected", "onContextItemSelected called");
+		// TODO Auto-generated method stub
 		return false;
 	}
 }
