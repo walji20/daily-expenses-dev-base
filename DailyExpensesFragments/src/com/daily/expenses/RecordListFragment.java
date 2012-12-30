@@ -2,6 +2,9 @@ package com.daily.expenses;
 
 import static com.daily.expenses.util.LogUtils.LOGD;
 import static com.daily.expenses.util.LogUtils.makeLogTag;
+
+import java.util.Map;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +26,9 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
+import com.daily.expenses.util.Maps;
+import com.daily.expenses.util.RecordFilter;
+
 import static com.daily.expenses.util.LogUtils.*;
 
 /**
@@ -217,11 +223,14 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		} else {
 			baseUri = DailyContentProvider.RECORDS_CONTENT_URI;
 		}
-
+		
+		// Get current filter parameters
+		RecordFilter filter = RecordFilter.getInstance();
+		String select = filter.getSelection();
+		String[] selectArgs = filter.getSelectionArgs();
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		String select = "((" + DailyTables.TABLE_RECORDS_COLUMN_TITLE + " NOTNULL) AND (" + DailyTables.TABLE_RECORDS_COLUMN_TITLE + " != '' ))";
-		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, null, DailyTables.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
+		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, selectArgs, DailyTables.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
