@@ -20,7 +20,6 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
  * more than a {@link RecordDetailFragment}.
  */
 public class RecordDetailActivity extends SherlockFragmentActivity {
-	@SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
