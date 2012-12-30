@@ -2,6 +2,7 @@ package com.daily.expenses.dialogs;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.app.AlertDialog;
@@ -13,11 +14,15 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.LayoutInflater.Filter;
 import android.widget.DatePicker;
 
 import com.daily.expenses.R;
 import com.daily.expenses.RecordListFragment;
 import com.daily.expenses.contentprovider.DailyContentProvider;
+import com.daily.expenses.database.DailyTables;
+import com.daily.expenses.util.Maps;
+import com.daily.expenses.util.RecordFilter;
 
 public class SelectDateDialogFragment extends DialogFragment {
 	DatePicker mDatePickerFrom;
@@ -61,13 +66,13 @@ public class SelectDateDialogFragment extends DialogFragment {
 						//For from DatePicker to min e.g. 00:00:
 						c.set(Calendar.SECOND, c.getMinimum(Calendar.SECOND));
 						c.set(Calendar.MINUTE, c.getMinimum(Calendar.MINUTE));
-						c.set(Calendar.HOUR, c.getMinimum(Calendar.HOUR));
+						c.set(Calendar.HOUR_OF_DAY, c.getMinimum(Calendar.HOUR_OF_DAY));
 					}
 					if(currentDatePicker.equals(mDatePickerTo)) {
 						//For from DatePicker to min e.g. 23:59:
 						c.set(Calendar.SECOND, c.getMaximum(Calendar.SECOND));
 						c.set(Calendar.MINUTE, c.getMaximum(Calendar.MINUTE));
-						c.set(Calendar.HOUR, c.getMaximum(Calendar.HOUR));
+						c.set(Calendar.HOUR_OF_DAY, c.getMaximum(Calendar.HOUR_OF_DAY));
 					}
 					c.set(unixDateYear, unixDateMonth, unixDateDay);
 					// get ms from calendar
@@ -82,18 +87,34 @@ public class SelectDateDialogFragment extends DialogFragment {
 				// ugly way to inform spinner about changed data
 				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
 				if(attachedFragment != null) {
-					
-					Uri mCurFilter = DailyContentProvider.buildBlocksBetweenDirUri(resultSet.get(0), resultSet.get(1));
-					attachedFragment.setmCurFilter(mCurFilter);
+					RecordFilter filter = RecordFilter.getInstance();
+					Map<String, String> selectionMap = Maps.newHashMap();
+					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + resultSet.get(0));
+					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  resultSet.get(1));
+					filter.set(selectionMap);
+					//Uri mCurFilter = DailyContentProvider.buildBlocksBetweenDirUri(resultSet.get(0), resultSet.get(1));
+					//attachedFragment.setmCurFilter(mCurFilter);
 					/* refill data */
 					attachedFragment.fillData();
 				}
 			}
+		}).setNeutralButton("Delete Filter", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Log.d("", "Delete Filter");
+				RecordFilter filter = RecordFilter.getInstance();
+				filter.reset();
+				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
+				if(attachedFragment != null) {
+					attachedFragment.fillData();
+				}
+				dialog.cancel();
+			}
 		}).setNegativeButton("Abort", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
 				Log.d("", "Dialog abort");
+				dialog.cancel();
 			}
 		}).create();
 	}
