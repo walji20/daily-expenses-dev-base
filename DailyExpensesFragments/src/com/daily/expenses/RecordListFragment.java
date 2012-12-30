@@ -3,8 +3,13 @@ package com.daily.expenses;
 import static com.daily.expenses.util.LogUtils.LOGD;
 import static com.daily.expenses.util.LogUtils.makeLogTag;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,8 +20,10 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
@@ -26,6 +33,7 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
+import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
 
@@ -51,7 +59,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	// If non-null, this is the current filter the user has provided.
 	private Uri mCurFilter;
 
-	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_ID };
+	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE  };
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -123,15 +131,31 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		 * Red[128225] Ensure compatibility for pre API 11 devices - list
 		 * highlighting
 		 */
-		int layout = android.R.layout.simple_list_item_1;
+		int layout = android.R.layout.simple_list_item_2;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			layout = android.R.layout.simple_list_item_activated_1;
+			layout = android.R.layout.simple_list_item_activated_2;
 		}
 
-		int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
+		int[] to = new int[] { 0, android.R.id.text1, android.R.id.text2 };
 
 		getActivity().getSupportLoaderManager().initLoader(0, null, this); 
 		mAdapter = new SimpleCursorAdapter(this.getActivity(), layout, null, RECORDS_OVERVIEW_PROJECTION, to, 0);
+		mAdapter.setViewBinder(new ViewBinder() {
+			/* Override this View to convert unix to readable date */
+			@Override
+			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+
+		        if (columnIndex == cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE)) {
+		                String createDate = cursor.getString(columnIndex);
+		                TextView textView = (TextView) view;
+		                Calendar c = Calendar.getInstance();
+		                c.setTimeInMillis(TimeUnit.SECONDS.toMillis(cursor.getLong(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE))));
+		                textView.setText( Clockwork.convertToHumanReadable( getActivity(), cursor.getLong(cursor.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE)) ));
+		                return true;
+		         }
+				return false;
+			}
+		});
 		setListAdapter(mAdapter);
 
 	}
@@ -230,7 +254,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		String[] selectArgs = filter.getSelectionArgs();
 		// Now create and return a CursorLoader that will take care of
 		// creating a Cursor for the data being displayed.
-		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, selectArgs, DailyTables.TABLE_RECORDS_COLUMN_TITLE + " COLLATE LOCALIZED ASC");
+		return new CursorLoader(getActivity(), baseUri, RECORDS_OVERVIEW_PROJECTION, select, selectArgs, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + " COLLATE LOCALIZED DESC");
 	}
 
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

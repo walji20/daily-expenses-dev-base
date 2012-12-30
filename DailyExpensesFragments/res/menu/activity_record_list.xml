@@ -15,6 +15,12 @@
         android:visible="false">
     </item>
     <item
+        android:id="@+id/graphs"
+        android:icon="@drawable/collections_sort_by_size"
+        android:showAsAction="ifRoom|withText"
+        android:title="Graphs">
+    </item>
+    <item
         android:id="@+id/filter"
         android:icon="@drawable/action_search"
         android:showAsAction="ifRoom|withText"

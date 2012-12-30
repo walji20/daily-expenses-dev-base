@@ -319,6 +319,7 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 			// Update record
 			 getActivity().getContentResolver().update(getRecordUri(), values, null, null);
 		}
+		refreshData();
 	}
 
 	public void requestSave() {
