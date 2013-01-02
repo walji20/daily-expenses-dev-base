@@ -33,6 +33,8 @@ public class DailyTables {
 		TABLE_RECORDS_COLUMN_UNIX_DATE, 
 		TABLE_RECORDS_COLUMN_PAY_STATE
 	 };
+    public static final String TABLE_RECORDS_COLUMN_CATEGORY_TYPE_DEFAULT = "0";
+   
     
     public static final String TABLE_CATEGORIES = "categories";
     public static final String TABLE_CATEGORIES_COLUMN_ID = "_id";
@@ -40,6 +42,7 @@ public class DailyTables {
     public static final String TABLE_CATEGORIES_COLUMN_TITLE = "title";
     public static final String TABLE_CATEGORIES_COLUMN_DESCRIPTION = "description";
     public static final String TABLE_CATEGORIES_COLUMN_RESOURCE_ICON = "resourceIcon";
+    public static final String TABLE_CATEGORIES_COLUMN_LOCK = "lock";
     public static final String[] TABLE_CATEGORIES_AVAILABLE_COLUMS = { 
 		TABLE_CATEGORIES_COLUMN_ID, 
 		TABLE_CATEGORIES_COLUMN_ID_PARENT, 
@@ -70,7 +73,8 @@ public class DailyTables {
 			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + " int default '0' not null, " 
 			  + TABLE_CATEGORIES_COLUMN_TITLE + " text not null, " 
 			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + " text default '' not null, " 
-			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + " int default '1' not null " 
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + " int default '1' not null, " 
+			  + TABLE_CATEGORIES_COLUMN_LOCK + " int default '0' not null " 
 			  + ");";
 	  
 	  // Database dummy items statement
@@ -88,15 +92,38 @@ public class DailyTables {
 	      + ")"
 	      + " VALUES"
 	      + "(" 
-	      + "'Test Title 1', "
+	      + "'Test Expense', "
 	      + "'Test Description 1', "
-	      + "'114', "
+	      + "'30', "
 	      + "'1', "
 	      + "'1', "
 	      + "'1', "
 	      + "'1355765617', "
 	      + "'1'"
 	      + ");";
+	  private static final String TABLE_RECORDS_DUMMY_DATA2 = "insert into " 
+			  + TABLE_RECORDS
+			  + "(" 
+			  + TABLE_RECORDS_COLUMN_TITLE + ", " 
+			  + TABLE_RECORDS_COLUMN_DESCRIPTION + ", " 
+			  + TABLE_RECORDS_COLUMN_AMOUNT + ", " 
+			  + TABLE_RECORDS_COLUMN_BOOKING_TYPE + ", " 
+			  + TABLE_RECORDS_COLUMN_PERIOD_TYPE + ", " 
+			  + TABLE_RECORDS_COLUMN_CATEGORY_TYPE + ", " 
+			  + TABLE_RECORDS_COLUMN_UNIX_DATE + ", " 
+			  + TABLE_RECORDS_COLUMN_PAY_STATE
+			  + ")"
+			  + " VALUES"
+			  + "(" 
+			  + "'Test Income', "
+			  + "'Test Description 1', "
+			  + "'100', "
+			  + "'0', "
+			  + "'1', "
+			  + "'1', "
+			  + "'1355765617', "
+			  + "'1'"
+			  + ");";
 	  
 	  private static final String TABLE_CATEGORIES_DUMMY_DATA = "insert into " 
 			  + TABLE_CATEGORIES
@@ -104,14 +131,16 @@ public class DailyTables {
 			  + TABLE_CATEGORIES_COLUMN_ID_PARENT + ", " 
 			  + TABLE_CATEGORIES_COLUMN_TITLE + ", " 
 			  + TABLE_CATEGORIES_COLUMN_DESCRIPTION + ", " 
-			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON
+			  + TABLE_CATEGORIES_COLUMN_RESOURCE_ICON + ", "
+			  + TABLE_CATEGORIES_COLUMN_LOCK
 			  + ")"
 			  + " VALUES"
 			  + "(" 
 			  + "'0', "
-			  + "'Category 1', "
-			  + "'Test Description for Category 1', "
-			  + "'114'"
+			  + "'Default', "
+			  + "'Holds uncategorized records.', "
+			  + "'114', "
+			  + "'1'"
 			  + ");";
 	  private static final String TABLE_CATEGORIES_DUMMY_DATA2 = "insert into " 
 			  + TABLE_CATEGORIES
@@ -133,12 +162,8 @@ public class DailyTables {
 		database.execSQL(TABLE_RECORDS_CREATE);
 		database.execSQL(TABLE_CATEGORIES_CREATE);
 		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
-		database.execSQL(TABLE_RECORDS_DUMMY_DATA);
+		database.execSQL(TABLE_RECORDS_DUMMY_DATA2);
+
 		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA);
 		database.execSQL(TABLE_CATEGORIES_DUMMY_DATA2);
 		Log.d(DailyTables.class.getName(), "Created and filled database.");

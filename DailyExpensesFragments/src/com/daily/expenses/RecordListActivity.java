@@ -116,7 +116,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			return true;
 		}
 		case R.id.graphs: {
-			//startActivity(new Intent(this, Graphs.class));
+			startActivity(new Intent(this, GraphsActivity.class));
 			return true;
 		}
 		}

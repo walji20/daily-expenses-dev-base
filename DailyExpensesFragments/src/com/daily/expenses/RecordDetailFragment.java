@@ -5,6 +5,7 @@ import static com.daily.expenses.util.LogUtils.makeLogTag;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
@@ -36,6 +37,8 @@ import com.daily.expenses.dialogs.EditDateDialogFragment;
 import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
 import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment;
 import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment.SpinnerEditCategoryDialogListener;
+import com.daily.expenses.util.Maps;
+import com.daily.expenses.util.RecordFilter;
 import com.throrinstudio.android.common.libs.validator.Form;
 import com.throrinstudio.android.common.libs.validator.Validate;
 import com.throrinstudio.android.common.libs.validator.validator.NotEmptyValidator;
@@ -426,9 +429,7 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 				}
 			}
 				
-			
 			refreshData();
-		
 	}
 
 	@Override
@@ -445,9 +446,40 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 
 	@Override
 	public void onSpinnerEditCategoryDialogDeleteClick(int categoryId) {
-
-		getActivity().getContentResolver().delete(Uri.parse(DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + categoryId), null, null);
-		refreshData();
+		
+		Uri categoryUri = Uri.parse( DailyContentProvider.CATEGORIES_CONTENT_URI + "/" + categoryId);
+		
+		String[] categoryProjection = { DailyTables.TABLE_CATEGORIES_COLUMN_ID, DailyTables.TABLE_CATEGORIES_COLUMN_LOCK};
+		Cursor categoryCursor = getActivity().getContentResolver().query(categoryUri, categoryProjection, null, null, null);
+		
+		//check if category is locked
+		categoryCursor.moveToFirst(); 
+		boolean isLocked = false;
+		if (categoryCursor.getInt(categoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_LOCK)) == 1) {
+			isLocked = true;
+		} 
+		
+		if(isLocked) {
+			Toast.makeText(getActivity(), "This category can't be deleted", Toast.LENGTH_LONG).show();
+		} else {
+			// Set default category for all records of this category
+			RecordFilter filter = RecordFilter.getInstance();
+			filter.reset();
+			Map<String, String> selectionMap = Maps.newHashMap();
+			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE + "=?", "" + categoryId);
+			filter.set(selectionMap);
+			String select = filter.getSelection();
+			String[] selectArgs = filter.getSelectionArgs();
+			
+		
+			ContentValues values = new ContentValues();
+			values.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE, DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE_DEFAULT);
+			int recoveredRows = getActivity().getContentResolver().update( DailyContentProvider.RECORDS_CONTENT_URI , values, select, selectArgs);
+			// finally delete category
+			getActivity().getContentResolver().delete(categoryUri, null, null);
+			Toast.makeText(getActivity(), "Moved " + recoveredRows + " to default category", Toast.LENGTH_LONG).show();
+			refreshData();
+		}
 		
 	}
 

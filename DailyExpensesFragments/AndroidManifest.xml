@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_vault"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.daily.expenses.RecordListActivity"
             android:label="@string/app_name" >
@@ -52,6 +52,17 @@
             android:name="com.daily.expenses.Grid"
             android:label="@string/title_activity_grid" >
         </activity>
+        <activity
+            android:name="com.daily.expenses.GraphsActivity"
+            android:label="@string/title_activity_graphs"
+            android:parentActivityName="com.daily.expenses.RecordListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.daily.expenses.RecordListActivity" />
+        </activity>
+        
+  		<activity android:name="org.achartengine.GraphicalActivity" />
     </application>
+
 
 </manifest>
