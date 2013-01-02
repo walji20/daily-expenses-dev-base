@@ -463,7 +463,7 @@ public class RecordDetailFragment extends SherlockFragment implements EditDateDi
 			Toast.makeText(getActivity(), "This category can't be deleted", Toast.LENGTH_LONG).show();
 		} else {
 			// Set default category for all records of this category
-			RecordFilter filter = RecordFilter.getInstance();
+			RecordFilter filter = new RecordFilter();
 			filter.reset();
 			Map<String, String> selectionMap = Maps.newHashMap();
 			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE + "=?", "" + categoryId);
