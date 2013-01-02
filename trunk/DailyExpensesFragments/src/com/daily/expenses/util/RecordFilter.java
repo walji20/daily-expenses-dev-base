@@ -10,16 +10,7 @@ import com.daily.expenses.database.DailyTables;
  */
 public final class RecordFilter 
 {
-    /**
-     * Privates Klassenattribut,
-     * wird beim erstmaligen Gebrauch (nicht beim Laden) der Klasse erzeugt
-     */
-    private static RecordFilter instance;
- 
     private SelectionBuilder mSelectionBuilder = null;
-
-
-	/** Konstruktor ist privat, Klasse darf nicht von außen instanziiert werden. */
 
     public RecordFilter() {
     	// Initialize SelectionBuilder 
@@ -27,20 +18,6 @@ public final class RecordFilter
     	this.reset();
 	}
 
-	/**
-     * Statische Methode „getInstance()“ liefert die einzige Instanz der Klasse zurück.
-     * Ist synchronisiert und somit thread-sicher.
-     */
-   
-    public synchronized static RecordFilter getInstance() 
-    {
-    	if (instance == null) 
-    	{
-    		instance = new RecordFilter();
-    	}
-    	return instance;
-    }
-    
 	public void set( Map<String, String> m) {
 		reset();
 		mSelectionBuilder.table(DailyTables.TABLE_RECORDS);

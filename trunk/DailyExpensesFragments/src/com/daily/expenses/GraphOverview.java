@@ -91,7 +91,7 @@ public class GraphOverview extends SherlockFragmentActivity {
         	
         	String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT };
 			
-        	RecordFilter filter = RecordFilter.getInstance();
+        	RecordFilter filter = new RecordFilter();
         	filter.reset();
         	// manage Income Records
         	Map<String, String> selectionMap = Maps.newHashMap();

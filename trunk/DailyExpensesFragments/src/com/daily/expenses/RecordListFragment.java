@@ -58,6 +58,8 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
     
 	// If non-null, this is the current filter the user has provided.
 	private Uri mCurFilter;
+	
+	private RecordFilter ListFilter = new RecordFilter();
 
 	String[] RECORDS_OVERVIEW_PROJECTION = new String[] { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE  };
 	/**
@@ -111,6 +113,14 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		return mCurFilter;
 	}
 	
+	public RecordFilter getListFilter() {
+		return ListFilter;
+	}
+
+	public void setListFilter(RecordFilter listFilter) {
+		ListFilter = listFilter;
+	}
+
 	public void setmCurFilter(Uri mCurFilter) {
 		this.mCurFilter = mCurFilter;
 	}
@@ -249,7 +259,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		}
 		
 		// Get current filter parameters
-		RecordFilter filter = RecordFilter.getInstance();
+		RecordFilter filter = getListFilter();
 		String select = filter.getSelection();
 		String[] selectArgs = filter.getSelectionArgs();
 		// Now create and return a CursorLoader that will take care of

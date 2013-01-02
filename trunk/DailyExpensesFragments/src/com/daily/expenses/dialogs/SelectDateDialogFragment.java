@@ -87,13 +87,12 @@ public class SelectDateDialogFragment extends DialogFragment {
 				// ugly way to inform spinner about changed data
 				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
 				if(attachedFragment != null) {
-					RecordFilter filter = RecordFilter.getInstance();
+					RecordFilter filter = new RecordFilter();
 					Map<String, String> selectionMap = Maps.newHashMap();
 					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + resultSet.get(0));
 					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  resultSet.get(1));
 					filter.set(selectionMap);
-					//Uri mCurFilter = DailyContentProvider.buildBlocksBetweenDirUri(resultSet.get(0), resultSet.get(1));
-					//attachedFragment.setmCurFilter(mCurFilter);
+					attachedFragment.setListFilter(filter);
 					/* refill data */
 					attachedFragment.fillData();
 				}
@@ -102,10 +101,11 @@ public class SelectDateDialogFragment extends DialogFragment {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d("", "Delete Filter");
-				RecordFilter filter = RecordFilter.getInstance();
+				RecordFilter filter = new RecordFilter();
 				filter.reset();
 				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
 				if(attachedFragment != null) {
+					attachedFragment.setListFilter(filter);
 					attachedFragment.fillData();
 				}
 				dialog.cancel();
