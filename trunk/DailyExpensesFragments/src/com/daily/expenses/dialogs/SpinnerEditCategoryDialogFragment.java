@@ -113,7 +113,8 @@ public class SpinnerEditCategoryDialogFragment extends DialogFragment {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d("", "Dialog confirmed");
-					mListener.onSpinnerEditCategoryDialogPositiveClick(mCurrentCategoryId, mCurrentCategoryTitle);
+					
+					mListener.onSpinnerEditCategoryDialogPositiveClick(mCurrentCategoryId, mCategoryTitle.getText().toString());
 					
 				}
 			}).setNegativeButton(R.string.dialog_category_NegativeButton, new DialogInterface.OnClickListener() {

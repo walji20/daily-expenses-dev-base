@@ -5,6 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="locate">Hello world!</string>
     <string name="title_item_detail">Record Detail</string>
+    <!-- General Words -->
+    <string name="income">income</string>
+    <string name="expenses">expenses</string>
+    <string name="total">current balance</string>
+    
+    
     <string name="loading">Loading..</string>
     <string name="title_activity_item_insert">Insert Record</string>
     <string name="title_activity_contacts">ContactsActivity</string>
