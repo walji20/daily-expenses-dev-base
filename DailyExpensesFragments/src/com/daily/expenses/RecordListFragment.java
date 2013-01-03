@@ -36,6 +36,7 @@ import com.daily.expenses.dialogs.SelectDateDialogFragment;
 import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
+import com.slidingmenu.lib.SlidingMenu;
 
 import static com.daily.expenses.util.LogUtils.*;
 
@@ -137,6 +138,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		super.onCreate(savedInstanceState);
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true); 
+		
 		/*
 		 * Red[128225] Ensure compatibility for pre API 11 devices - list
 		 * highlighting

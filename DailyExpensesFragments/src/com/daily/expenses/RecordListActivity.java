@@ -3,12 +3,10 @@ package com.daily.expenses;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 
@@ -19,8 +17,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.util.LogUtils;
-
-import static com.daily.expenses.util.LogUtils.*;
+import com.slidingmenu.lib.SlidingMenu;
 /**
  * An activity representing a list of Items. This activity has different
  * presentations for handset and tablet-size devices. On handsets, the activity
@@ -47,14 +44,33 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 	 * device.
 	 */
 	private boolean mTwoPane;
-
+	private SlidingMenu menu;
 	private RecordDetailFragment recordDetailFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_record_list);
-
+		
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		// configure the SlidingMenu
+		menu = new SlidingMenu(this);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		menu.setShadowWidthRes(R.dimen.shadow_width);
+		menu.setShadowDrawable(R.drawable.shadow);
+		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+		menu.setMenu(R.layout.menu_frame);
+		menu.setSlidingEnabled(true);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		
+		getSupportFragmentManager()
+		.beginTransaction()
+		.replace(R.id.menu_frame, new SampleListFragment())
+		.commit();
+		
 		if (findViewById(R.id.record_detail_container) != null) {
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and
@@ -66,6 +82,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 			// 'activated' state when touched.
 			((RecordListFragment) getSupportFragmentManager().findFragmentById(R.id.record_list)).setActivateOnItemClick(true);
 		}
+		
 
 		ListView list = (ListView) findViewById(android.R.id.list);
 		//this.registerForContextMenu(list);
@@ -73,7 +90,16 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		registerForContextMenu(list);
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+		if (menu.isMenuShowing()) {
+			menu.showContent();
+		} else {
+			super.onBackPressed();
+		}
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getSupportMenuInflater();
@@ -84,6 +110,19 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		 case android.R.id.home: {
+             // This ID represents the Home or Up button. In the case of this
+             // activity, the Up button is shown. Use NavUtils to allow users
+             // to navigate up one level in the application structure. For
+             // more details, see the Navigation pattern on Android Design:
+             //
+             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+             //
+             //NavUtils.navigateUpTo(this, new Intent(this, RecordListActivity.class));
+			 //Since I want to show the side bar this is not neccessary 
+			 menu.toggle();
+             return true;
+		 }     
 		case R.id.insert: {
 			if (mTwoPane) {
 				// In two-pane mode, show the detail view in this activity by
@@ -113,10 +152,6 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		}
 		case R.id.grid: {
 			startActivity(new Intent(this, Grid.class));
-			return true;
-		}
-		case R.id.graphs: {
-			startActivity(new Intent(this, GraphsActivity.class));
 			return true;
 		}
 		}
@@ -189,4 +224,5 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 }

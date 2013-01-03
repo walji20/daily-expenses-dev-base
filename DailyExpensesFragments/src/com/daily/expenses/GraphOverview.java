@@ -133,7 +133,9 @@ public class GraphOverview extends SherlockFragmentActivity {
         	}
         	
         	total = income - expenses;
-            
+            if(total <= -1) {
+            	total = 0;
+            }
             CategorySeries series = new CategorySeries("Chart");
 //			series.add(getActivity().getString(R.string.income), income);
 //			series.add(getActivity().getString(R.string.costs), costs);
@@ -141,7 +143,7 @@ public class GraphOverview extends SherlockFragmentActivity {
     		
     		
     		 DefaultRenderer render = new DefaultRenderer();
-
+    		 
 //             for ( ValuePair entry : incomeValues) {
 //            		SimpleSeriesRenderer r = new SimpleSeriesRenderer();
 //                 	//r.setColor(color);
@@ -177,6 +179,9 @@ public class GraphOverview extends SherlockFragmentActivity {
 //            	render.addSeriesRenderer(r);
 //            }
         	render.setInScroll(true);
+          	render.setPanEnabled(true);
+          	render.setClickEnabled(false);
+          	
             render.setShowLabels(true);
     		render.setShowLegend(true);
     		render.setShowGrid(true);
@@ -188,9 +193,6 @@ public class GraphOverview extends SherlockFragmentActivity {
         	//layout.removeAllViews();
         	layout.addView(v);
         	
-            //startActivity(getPieChart(getActivity()));
-            
-         
             return layout;
         }
     }
