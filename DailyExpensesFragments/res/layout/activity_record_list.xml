@@ -6,14 +6,21 @@
     android:layout_marginRight="16dp"
     android:orientation="horizontal"
     tools:context=".RecordListActivity" >
-    
-<fragment android:id="@+id/record_list"
-    android:name="com.daily.expenses.RecordListFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="7dp"
-    android:layout_marginRight="16dp"
-    tools:context=".RecordListActivity"
-    tools:layout="@layout/list_content" />
+
+    <TextView
+        android:layout_width="4dip"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:text="x" />
+
+    <fragment
+        android:id="@+id/record_list"
+        android:name="com.daily.expenses.RecordListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="16dp"
+        tools:context=".RecordListActivity"
+        tools:layout="@layout/list_content" />
 
 </LinearLayout>

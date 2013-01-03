@@ -19,7 +19,11 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
 
     -->
-
+	<TextView
+        android:layout_width="4dp"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:text="x" />
     <fragment
         android:id="@+id/record_list"
         android:name="com.daily.expenses.RecordListFragment"

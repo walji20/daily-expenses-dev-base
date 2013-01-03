@@ -32,8 +32,8 @@ public class GraphsActivity extends SherlockFragmentActivity {
 
         mTabManager = new TabManager(this, mTabHost, R.id.realtabcontent);
 
-        mTabManager.addTab(mTabHost.newTabSpec("overview").setIndicator("Overview"), GraphOverview.GraphOverviewFragment.class, null);
-        mTabManager.addTab(mTabHost.newTabSpec("graphs2").setIndicator("Graphs"), GraphOverview.GraphOverviewFragment.class, null);
+        mTabManager.addTab(mTabHost.newTabSpec("graph_overview").setIndicator("Overview"), GraphOverview.GraphOverviewFragment.class, null);
+        mTabManager.addTab(mTabHost.newTabSpec("graph_month").setIndicator("Month"), GraphMonth.GraphMonthFragment.class, null);
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
         }
