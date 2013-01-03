@@ -26,7 +26,7 @@ public class SampleListFragment extends SherlockListFragment {
 		super.onActivityCreated(savedInstanceState);
 		SampleAdapter adapter = new SampleAdapter(getActivity());
 		adapter.add(new SampleItem("Graphs", R.drawable.collections_sort_by_size));
-	
+		
 		setListAdapter(adapter);
 	}
 	

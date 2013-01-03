@@ -2,7 +2,10 @@ package com.daily.expenses;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -15,9 +18,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -28,7 +33,7 @@ import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
 import com.daily.expenses.util.ValuePair;
 
-public class GraphOverview extends SherlockFragmentActivity {
+public class GraphMonth extends SherlockFragmentActivity {
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,7 @@ public class GraphOverview extends SherlockFragmentActivity {
 
         if (savedInstanceState == null) {
             // Do first time initialization -- add initial fragment.
-            Fragment newFragment = GraphOverviewFragment.newInstance(1);
+            Fragment newFragment = GraphMonthFragment.newInstance(1);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.add(R.id.simple_fragment, newFragment).commit();
         } else {
@@ -47,15 +52,15 @@ public class GraphOverview extends SherlockFragmentActivity {
         }
     }
 
-	public static class GraphOverviewFragment extends SherlockFragment {
+	public static class GraphMonthFragment extends SherlockFragment {
 	int mNum;
 
     /**
 	* Create a new instance of CountingFragment, providing "num"
 	* as an argument.
 	*/
-        static GraphOverviewFragment newInstance(int num) {
-            GraphOverviewFragment f = new GraphOverviewFragment();
+        static GraphMonthFragment newInstance(int num) {
+        	GraphMonthFragment f = new GraphMonthFragment();
 
             // Supply num input as an argument.
             Bundle args = new Bundle();
@@ -90,11 +95,42 @@ public class GraphOverview extends SherlockFragmentActivity {
         	
         	String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT };
 			
+        	GregorianCalendar[] cals = { new GregorianCalendar(), new GregorianCalendar() };
+			ArrayList<Long> resultSet = new ArrayList<Long>();
+			
+			//TODO: replace ugly min and max time calculation
+			for (int i = 0; i < cals.length; i++) {
+				GregorianCalendar gc = cals[i];
+				//Set the maximum range of the day
+				if(i == 0) {
+					//min e.g. 1. day 00:00:
+					gc.set(GregorianCalendar.SECOND, gc.getActualMinimum(GregorianCalendar.SECOND));
+		        	gc.set(GregorianCalendar.MINUTE, gc.getActualMinimum(GregorianCalendar.MINUTE));
+		        	gc.set(GregorianCalendar.HOUR_OF_DAY, gc.getActualMinimum(GregorianCalendar.HOUR_OF_DAY));
+		        	gc.set(GregorianCalendar.DAY_OF_MONTH, gc.getActualMinimum(GregorianCalendar.DAY_OF_MONTH));
+				} else
+				if( i == 1) {
+					//max e.g. 31. day 23:59:
+					gc.set(GregorianCalendar.SECOND, gc.getActualMaximum(GregorianCalendar.SECOND));
+		        	gc.set(GregorianCalendar.MINUTE, gc.getActualMaximum(GregorianCalendar.MINUTE));
+		        	gc.set(GregorianCalendar.HOUR_OF_DAY, gc.getActualMaximum(GregorianCalendar.HOUR_OF_DAY));
+		        	gc.set(GregorianCalendar.DAY_OF_MONTH, gc.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
+				}
+				// get ms from calendar
+				long unixTms = gc.getTimeInMillis();
+				// convert ms to s
+				long unixTs = TimeUnit.MILLISECONDS.toSeconds(unixTms);
+				Log.d("Timestamp from calendar: ", "" + unixTs);
+				resultSet.add(unixTs);
+			}
+			
         	RecordFilter filter = new RecordFilter();
         	filter.reset();
         	// manage Income Records
         	Map<String, String> selectionMap = Maps.newHashMap();
 			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "=?", "" + 0);
+			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + resultSet.get(0));
+			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "<=?", "" + resultSet.get(1));
 			filter.set(selectionMap);
 			
     		select = filter.getSelection();
