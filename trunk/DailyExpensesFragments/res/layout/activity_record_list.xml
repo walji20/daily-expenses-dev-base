@@ -1,10 +1,19 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/record_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="16dp"
+    android:orientation="horizontal"
+    tools:context=".RecordListActivity" >
+    
+<fragment android:id="@+id/record_list"
     android:name="com.daily.expenses.RecordListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
+    android:layout_marginLeft="7dp"
     android:layout_marginRight="16dp"
     tools:context=".RecordListActivity"
     tools:layout="@layout/list_content" />
+
+</LinearLayout>

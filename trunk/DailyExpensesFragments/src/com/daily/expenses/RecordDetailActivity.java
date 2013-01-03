@@ -1,6 +1,5 @@
 package com.daily.expenses;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -28,7 +27,7 @@ public class RecordDetailActivity extends SherlockFragmentActivity {
         
      
     	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    
+    	
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
