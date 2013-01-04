@@ -30,6 +30,38 @@ import com.daily.expenses.util.ValuePair;
 public class SelectDateDialogFragment extends DialogFragment {
 	DatePicker mDatePickerFrom;
 	DatePicker mDatePickerTo;
+
+	/* The activity that creates an instance of this dialog fragment must
+	 * implement this interface in order to receive event callbacks.
+	 * Each method passes the DialogFragment in case the host needs to query it. */
+	public interface SelectDateDialog {
+		public void onSelectDateDialogPositiveClick(ValuePair dates);
+		public void onSelectDateDialogDialogNeutralClick();
+		public void onSelectDateDialogNegativeClick();
+	}
+	
+	// Use this instance of the interface to deliver action events
+	SelectDateDialog mListener = new SelectDateDialog() {
+		
+		@Override
+		public void onSelectDateDialogPositiveClick(ValuePair dates) {
+			//Should always overridden by interface implementing class
+		}
+		
+		@Override
+		public void onSelectDateDialogDialogNeutralClick() {
+			//Should always overridden by interface implementing class
+		}
+		
+		@Override
+		public void onSelectDateDialogNegativeClick() {
+			//Should always overridden by interface implementing class
+		}
+	};
+
+	public void setListener(SelectDateDialog listener) {
+		mListener = listener;
+	}
 	
 	public static SelectDateDialogFragment newInstance() {
 		SelectDateDialogFragment p = new SelectDateDialogFragment();
@@ -54,41 +86,25 @@ public class SelectDateDialogFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d("", "Dialog confirmed");
 				
-	        	long from = Clockwork.getMillis(mDatePickerFrom);
+				long from = Clockwork.getMillis(mDatePickerFrom);
 	        	long to = Clockwork.getMillis(mDatePickerFrom);
 				ValuePair dates = Clockwork.getMaximumRange(Clockwork.DAY, from, to);
 				
-				//TODO: improve
-				// ugly way to inform spinner about changed data
-				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
-				if(attachedFragment != null) {
-					RecordFilter filter = new RecordFilter();
-					Map<String, String> selectionMap = Maps.newHashMap();
-					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + dates.getValue1());
-					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  dates.getValue2());
-					filter.set(selectionMap);
-					attachedFragment.setListFilter(filter);
-					/* refill data */
-					attachedFragment.fillData();
-				}
+	        	mListener.onSelectDateDialogPositiveClick(dates);
 			}
 		}).setNeutralButton("Delete Filter", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d("", "Delete Filter");
-				RecordFilter filter = new RecordFilter();
-				filter.reset();
-				RecordListFragment attachedFragment = (RecordListFragment) getFragmentManager().findFragmentById(R.id.record_list);
-				if(attachedFragment != null) {
-					attachedFragment.setListFilter(filter);
-					attachedFragment.fillData();
-				}
+				
+				mListener.onSelectDateDialogDialogNeutralClick();
 				dialog.cancel();
 			}
 		}).setNegativeButton("Abort", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d("", "Dialog abort");
+				mListener.onSelectDateDialogNegativeClick();
 				dialog.cancel();
 			}
 		}).create();
