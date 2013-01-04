@@ -66,7 +66,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		
 		getSupportFragmentManager()
 		.beginTransaction()
-		.replace(R.id.menu_frame, new SampleListFragment())
+		.replace(R.id.menu_frame, new SideMenuFragment())
 		.commit();
 		
 		if (findViewById(R.id.record_detail_container) != null) {
