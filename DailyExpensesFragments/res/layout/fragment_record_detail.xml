@@ -89,8 +89,8 @@
                 android:id="@+id/record_edit_button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Confirm" 
-                android:visibility="invisible">
+                android:text="Confirm"
+                android:visibility="invisible" >
             </Button>
         </LinearLayout>
     </ScrollView>
