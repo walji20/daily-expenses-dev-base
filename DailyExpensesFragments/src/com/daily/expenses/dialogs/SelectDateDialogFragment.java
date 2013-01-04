@@ -2,6 +2,7 @@ package com.daily.expenses.dialogs;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -21,8 +22,10 @@ import com.daily.expenses.R;
 import com.daily.expenses.RecordListFragment;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
+import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
+import com.daily.expenses.util.ValuePair;
 
 public class SelectDateDialogFragment extends DialogFragment {
 	DatePicker mDatePickerFrom;
@@ -51,37 +54,9 @@ public class SelectDateDialogFragment extends DialogFragment {
 			public void onClick(DialogInterface dialog, int which) {
 				Log.d("", "Dialog confirmed");
 				
-				DatePicker[] datePicker = { mDatePickerFrom, mDatePickerTo };
-				ArrayList<Long> resultSet = new ArrayList<Long>();
-				
-				for (DatePicker currentDatePicker : datePicker) {
-					
-					int unixDateYear = currentDatePicker.getYear();
-					int unixDateMonth = currentDatePicker.getMonth();
-					int unixDateDay = currentDatePicker.getDayOfMonth();
-					
-					Calendar c = Calendar.getInstance();
-					//Set the maximum range of the day
-					if(currentDatePicker.equals(mDatePickerFrom)) {
-						//For from DatePicker to min e.g. 00:00:
-						c.set(Calendar.SECOND, c.getMinimum(Calendar.SECOND));
-						c.set(Calendar.MINUTE, c.getMinimum(Calendar.MINUTE));
-						c.set(Calendar.HOUR_OF_DAY, c.getMinimum(Calendar.HOUR_OF_DAY));
-					}
-					if(currentDatePicker.equals(mDatePickerTo)) {
-						//For from DatePicker to min e.g. 23:59:
-						c.set(Calendar.SECOND, c.getMaximum(Calendar.SECOND));
-						c.set(Calendar.MINUTE, c.getMaximum(Calendar.MINUTE));
-						c.set(Calendar.HOUR_OF_DAY, c.getMaximum(Calendar.HOUR_OF_DAY));
-					}
-					c.set(unixDateYear, unixDateMonth, unixDateDay);
-					// get ms from calendar
-					long unixTms = c.getTimeInMillis();
-					// convert ms to s
-					long unixTs = TimeUnit.MILLISECONDS.toSeconds(unixTms);
-					Log.d("Timestamp from DatePicker: ", "" + unixTs);
-					resultSet.add(unixTs);
-				}
+	        	long from = Clockwork.getMillis(mDatePickerFrom);
+	        	long to = Clockwork.getMillis(mDatePickerFrom);
+				ValuePair dates = Clockwork.getMaximumRange(Clockwork.DAY, from, to);
 				
 				//TODO: improve
 				// ugly way to inform spinner about changed data
@@ -89,8 +64,8 @@ public class SelectDateDialogFragment extends DialogFragment {
 				if(attachedFragment != null) {
 					RecordFilter filter = new RecordFilter();
 					Map<String, String> selectionMap = Maps.newHashMap();
-					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + resultSet.get(0));
-					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  resultSet.get(1));
+					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + dates.getValue1());
+					selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  dates.getValue2());
 					filter.set(selectionMap);
 					attachedFragment.setListFilter(filter);
 					/* refill data */
