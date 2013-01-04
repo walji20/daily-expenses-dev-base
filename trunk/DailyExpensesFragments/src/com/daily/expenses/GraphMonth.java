@@ -29,8 +29,10 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
+import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
+import com.daily.expenses.util.StringValuePair;
 import com.daily.expenses.util.ValuePair;
 
 public class GraphMonth extends SherlockFragmentActivity {
@@ -95,55 +97,32 @@ public class GraphMonth extends SherlockFragmentActivity {
         	
         	String[] projection = { DailyTables.TABLE_RECORDS_COLUMN_ID, DailyTables.TABLE_RECORDS_COLUMN_TITLE, DailyTables.TABLE_RECORDS_COLUMN_AMOUNT };
 			
-        	GregorianCalendar[] cals = { new GregorianCalendar(), new GregorianCalendar() };
-			ArrayList<Long> resultSet = new ArrayList<Long>();
-			
-			//TODO: replace ugly min and max time calculation
-			for (int i = 0; i < cals.length; i++) {
-				GregorianCalendar gc = cals[i];
-				//Set the maximum range of the day
-				if(i == 0) {
-					//min e.g. 1. day 00:00:
-					gc.set(GregorianCalendar.SECOND, gc.getActualMinimum(GregorianCalendar.SECOND));
-		        	gc.set(GregorianCalendar.MINUTE, gc.getActualMinimum(GregorianCalendar.MINUTE));
-		        	gc.set(GregorianCalendar.HOUR_OF_DAY, gc.getActualMinimum(GregorianCalendar.HOUR_OF_DAY));
-		        	gc.set(GregorianCalendar.DAY_OF_MONTH, gc.getActualMinimum(GregorianCalendar.DAY_OF_MONTH));
-				} else
-				if( i == 1) {
-					//max e.g. 31. day 23:59:
-					gc.set(GregorianCalendar.SECOND, gc.getActualMaximum(GregorianCalendar.SECOND));
-		        	gc.set(GregorianCalendar.MINUTE, gc.getActualMaximum(GregorianCalendar.MINUTE));
-		        	gc.set(GregorianCalendar.HOUR_OF_DAY, gc.getActualMaximum(GregorianCalendar.HOUR_OF_DAY));
-		        	gc.set(GregorianCalendar.DAY_OF_MONTH, gc.getActualMaximum(GregorianCalendar.DAY_OF_MONTH));
-				}
-				// get ms from calendar
-				long unixTms = gc.getTimeInMillis();
-				// convert ms to s
-				long unixTs = TimeUnit.MILLISECONDS.toSeconds(unixTms);
-				Log.d("Timestamp from calendar: ", "" + unixTs);
-				resultSet.add(unixTs);
-			}
+			//TODO: use datepicker
+        	Calendar gcFrom = GregorianCalendar.getInstance();
+        	Calendar gcTo = GregorianCalendar.getInstance();
+        	
+			ValuePair dates = Clockwork.getMaximumRange(Clockwork.MONTH, gcFrom.getTimeInMillis(), gcTo.getTimeInMillis());
 			
         	RecordFilter filter = new RecordFilter();
         	filter.reset();
         	// manage Income Records
         	Map<String, String> selectionMap = Maps.newHashMap();
 			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "=?", "" + 0);
-			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + resultSet.get(0));
-			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "<=?", "" + resultSet.get(1));
+			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + dates.getValue1());
+			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "<=?", "" +  dates.getValue2());
 			filter.set(selectionMap);
 			
     		select = filter.getSelection();
     		selectArgs = filter.getSelectionArgs();
         	
-    		ArrayList<ValuePair> incomeValues = new ArrayList<ValuePair>();
+    		ArrayList<StringValuePair> incomeValues = new ArrayList<StringValuePair>();
     		
         	Cursor incomeRecords = getActivity().getContentResolver().query(DailyContentProvider.RECORDS_CONTENT_URI, projection , select, selectArgs, null);
         	
         	for (boolean hasItem = incomeRecords.moveToFirst(); hasItem; hasItem = incomeRecords.moveToNext()) {
         		String title = incomeRecords.getString(incomeRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE));
         	    double amount = incomeRecords.getDouble(incomeRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT));
-        		incomeValues.add(new ValuePair( title, amount ));
+        		incomeValues.add(new StringValuePair( title, amount ));
         		income += amount;
 			}
         	
@@ -155,14 +134,14 @@ public class GraphMonth extends SherlockFragmentActivity {
         	select = filter.getSelection();
         	selectArgs = filter.getSelectionArgs();
         	
-        	ArrayList<ValuePair> expensesValues = new ArrayList<ValuePair>();
+        	ArrayList<StringValuePair> expensesValues = new ArrayList<StringValuePair>();
         	
         	Cursor expensesRecords = getActivity().getContentResolver().query(DailyContentProvider.RECORDS_CONTENT_URI, projection , select, selectArgs, null);
         	
         	for (boolean hasItem = expensesRecords.moveToFirst(); hasItem; hasItem = expensesRecords.moveToNext()) {
         		String title = expensesRecords.getString(expensesRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE));
         		double amount = expensesRecords.getDouble(expensesRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT));
-        		expensesValues.add(new ValuePair( title, amount ));
+        		expensesValues.add(new StringValuePair( title, amount ));
         		expenses += amount;
         	}
         	
@@ -206,7 +185,8 @@ public class GraphMonth extends SherlockFragmentActivity {
         	render.setInScroll(true);
           	render.setPanEnabled(true);
           	render.setClickEnabled(false);
-          	
+          	render.setChartTitle("Since " + Clockwork.convertToHumanReadable(getActivity(), dates.getValue1()));
+          	render.setChartTitleTextSize(26);
             render.setShowLabels(true);
     		render.setShowLegend(true);
     		render.setShowGrid(true);

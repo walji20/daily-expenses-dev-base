@@ -26,7 +26,7 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
-import com.daily.expenses.util.ValuePair;
+import com.daily.expenses.util.StringValuePair;
 
 public class GraphOverview extends SherlockFragmentActivity {
 
@@ -100,14 +100,14 @@ public class GraphOverview extends SherlockFragmentActivity {
     		select = filter.getSelection();
     		selectArgs = filter.getSelectionArgs();
         	
-    		ArrayList<ValuePair> incomeValues = new ArrayList<ValuePair>();
+    		ArrayList<StringValuePair> incomeValues = new ArrayList<StringValuePair>();
     		
         	Cursor incomeRecords = getActivity().getContentResolver().query(DailyContentProvider.RECORDS_CONTENT_URI, projection , select, selectArgs, null);
         	
         	for (boolean hasItem = incomeRecords.moveToFirst(); hasItem; hasItem = incomeRecords.moveToNext()) {
         		String title = incomeRecords.getString(incomeRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE));
         	    double amount = incomeRecords.getDouble(incomeRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT));
-        		incomeValues.add(new ValuePair( title, amount ));
+        		incomeValues.add(new StringValuePair( title, amount ));
         		income += amount;
 			}
         	
@@ -119,14 +119,14 @@ public class GraphOverview extends SherlockFragmentActivity {
         	select = filter.getSelection();
         	selectArgs = filter.getSelectionArgs();
         	
-        	ArrayList<ValuePair> expensesValues = new ArrayList<ValuePair>();
+        	ArrayList<StringValuePair> expensesValues = new ArrayList<StringValuePair>();
         	
         	Cursor expensesRecords = getActivity().getContentResolver().query(DailyContentProvider.RECORDS_CONTENT_URI, projection , select, selectArgs, null);
         	
         	for (boolean hasItem = expensesRecords.moveToFirst(); hasItem; hasItem = expensesRecords.moveToNext()) {
         		String title = expensesRecords.getString(expensesRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_TITLE));
         		double amount = expensesRecords.getDouble(expensesRecords.getColumnIndexOrThrow(DailyTables.TABLE_RECORDS_COLUMN_AMOUNT));
-        		expensesValues.add(new ValuePair( title, amount ));
+        		expensesValues.add(new StringValuePair( title, amount ));
         		expenses += amount;
         	}
         	
