@@ -33,5 +33,9 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section1">Section 1</string>
     <string name="title_activity_graphs">Graphs</string>
+    <string name="graphs">Graphs</string>
+    <string name="ocr">Scan bill</string>
+    <string name="preferences">Preferences</string>
+    <string name="about">About</string>
 
 </resources>

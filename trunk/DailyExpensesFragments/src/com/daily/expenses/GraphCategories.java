@@ -92,7 +92,8 @@ public class GraphCategories extends SherlockFragmentActivity {
         	LinearLayout layout = new LinearLayout(getActivity());
         	GraphicalView v;
         	double income = 0;
-        	
+        	/* used to get colors */
+        	int colorIndex = 0;
         	String select;
         	String[] selectArgs;
         	
@@ -107,11 +108,10 @@ public class GraphCategories extends SherlockFragmentActivity {
         	Cursor categoryCursor = getSherlockActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryProjection, null, null, null);
         	for (boolean hasItem = categoryCursor.moveToFirst(); hasItem; hasItem = categoryCursor.moveToNext()) {
         		double expenses = 0;
+        		colorIndex++;
         		String categoryTitle = categoryCursor.getString(categoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE));
         	    long categoryId = categoryCursor.getLong(categoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_ID));
         	   
-        		
-        		
         		// manage expense Records
             	Map<String, String> selectionMap = Maps.newHashMap();
             	RecordFilter filter = new RecordFilter();
@@ -133,12 +133,11 @@ public class GraphCategories extends SherlockFragmentActivity {
             		expenses += recordAmount;
             	}
             	SimpleSeriesRenderer incomeSeriesRenderer = new SimpleSeriesRenderer();
-            	 incomeSeriesRenderer.setColor( GraphsHelper.getRandomColorCode() );
+            	 incomeSeriesRenderer.setColor( GraphsHelper.getColorCode( colorIndex ) );
             	 render.addSeriesRenderer(incomeSeriesRenderer);
             	series.add(categoryTitle + ": " + expenses, expenses);
 			}
         	
-          	
         	render.setInScroll(true);
           	render.setPanEnabled(true);
           	render.setClickEnabled(false);

@@ -51,7 +51,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_record_list);
-		
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		// configure the SlidingMenu
@@ -63,7 +63,7 @@ public class RecordListActivity extends SherlockFragmentActivity implements Reco
 		menu.setMenu(R.layout.menu_frame);
 		menu.setSlidingEnabled(true);
 		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		
+	    
 		getSupportFragmentManager()
 		.beginTransaction()
 		.replace(R.id.menu_frame, new SideMenuFragment())
