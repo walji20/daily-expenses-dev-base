@@ -32,10 +32,15 @@ import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
+import com.daily.expenses.dialogs.EditDateDialogFragment;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
+import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment;
+import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
+import com.daily.expenses.dialogs.SelectDateDialogFragment.SelectDateDialog;
 import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
+import com.daily.expenses.util.ValuePair;
 import com.slidingmenu.lib.SlidingMenu;
 
 import static com.daily.expenses.util.LogUtils.*;
@@ -49,7 +54,7 @@ import static com.daily.expenses.util.LogUtils.*;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class RecordListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class RecordListFragment extends SherlockListFragment implements LoaderManager.LoaderCallbacks<Cursor>, SelectDateDialog {
 	
 	
 	private static final String TAG = makeLogTag(DailyDatabaseHelper.class);
@@ -139,6 +144,16 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true); 
 		
+		
+		if (savedInstanceState != null) {
+			
+			SelectDateDialogFragment sd = (SelectDateDialogFragment) getSherlockActivity().getSupportFragmentManager().findFragmentByTag("SelectDateDialog"); // "tag" is the string set as the tag for the dialog when you show it
+			if (sd != null) {
+				// the dialog exists so update its listener
+				sd.setListener(this);
+			}
+		}
+		
 		/*
 		 * Red[128225] Ensure compatibility for pre API 11 devices - list
 		 * highlighting
@@ -169,7 +184,7 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 			}
 		});
 		setListAdapter(mAdapter);
-
+		
 	}
 
 	public void fillData() {
@@ -288,8 +303,10 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	        case R.id.filter: {
 				 LOGD(TAG, "Filter called.");
 				
-				 DialogFragment newFragment = SelectDateDialogFragment.newInstance();
-				 newFragment.show(getActivity().getSupportFragmentManager(), "dialog");
+				 
+				 SelectDateDialogFragment dialog = SelectDateDialogFragment.newInstance();
+				 dialog.setListener((SelectDateDialog) this);
+				 dialog.show(getActivity().getSupportFragmentManager(), "SelectDateDialog");
 				 getSherlockActivity().getSupportActionBar().getDisplayOptions();
 				 
 				 return true;
@@ -304,4 +321,32 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 	        return super.onOptionsItemSelected(item);
 	       }
 	 }
+
+	@Override
+	public void onSelectDateDialogPositiveClick(ValuePair dates) {
+
+		RecordFilter filter = new RecordFilter();
+		Map<String, String> selectionMap = Maps.newHashMap();
+		selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + dates.getValue1());
+		selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  dates.getValue2());
+		filter.set(selectionMap);
+		setListFilter(filter);
+		fillData();
+	}
+
+	@Override
+	public void onSelectDateDialogDialogNeutralClick() {
+		
+		RecordFilter filter = new RecordFilter();
+		filter.reset();
+		
+		setListFilter(filter);
+		fillData();
+	}
+
+	@Override
+	public void onSelectDateDialogNegativeClick() {
+		// TODO Auto-generated method stub
+		
+	}
 }

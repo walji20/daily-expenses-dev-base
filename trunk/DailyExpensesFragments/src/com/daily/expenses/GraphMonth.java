@@ -100,7 +100,6 @@ public class GraphMonth extends SherlockFragmentActivity {
 			//TODO: use datepicker
         	Calendar gcFrom = GregorianCalendar.getInstance();
         	Calendar gcTo = GregorianCalendar.getInstance();
-        	
 			ValuePair dates = Clockwork.getMaximumRange(Clockwork.MONTH, gcFrom.getTimeInMillis(), gcTo.getTimeInMillis());
 			
         	RecordFilter filter = new RecordFilter();
