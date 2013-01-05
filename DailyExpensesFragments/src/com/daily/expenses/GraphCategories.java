@@ -15,13 +15,16 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import android.database.Cursor;
 import android.graphics.Color;
+import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
@@ -29,6 +32,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
+import com.daily.expenses.dialogs.SelectDateDialogFragment;
+import com.daily.expenses.dialogs.SelectDateDialogFragment.SelectDateDialog;
 import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.GraphsHelper;
 import com.daily.expenses.util.Maps;
@@ -55,8 +60,10 @@ public class GraphCategories extends SherlockFragmentActivity {
         }
     }
 
-	public static class GraphCategoriesFragment extends SherlockFragment {
+	public static class GraphCategoriesFragment extends SherlockFragment implements SelectDateDialogFragment.SelectDateDialog {
 	int mNum;
+	private ValuePair mDateValuesFilter = null;
+	private GraphicalView mChartView;
 
     /**
 	* Create a new instance of CountingFragment, providing "num"
@@ -79,6 +86,16 @@ public class GraphCategories extends SherlockFragmentActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            
+        	if (savedInstanceState != null) {
+    			
+    			SelectDateDialogFragment sd = (SelectDateDialogFragment) getSherlockActivity().getSupportFragmentManager().findFragmentByTag("SelectDateDialog"); // "tag" is the string set as the tag for the dialog when you show it
+    			if (sd != null) {
+    				// the dialog exists so update its listener
+    				sd.setListener(this);
+    			}
+    		}
+        	
             mNum = getArguments() != null ? getArguments().getInt("num") : 1;
         }
 
@@ -88,9 +105,21 @@ public class GraphCategories extends SherlockFragmentActivity {
 		*/
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            //View v = inflater.inflate(R.layout.hello_world, container, false);
+            //View mChartView = inflater.inflate(R.layout.hello_world, container, false);
         	LinearLayout layout = new LinearLayout(getActivity());
-        	GraphicalView v;
+        	Button mButton = new Button(getSherlockActivity());
+        	mButton.setText("Filter");
+        	mButton.setOnClickListener( new View.OnClickListener() {
+        		@Override
+        		public void onClick(View v) {
+					
+        			 SelectDateDialogFragment dialog = SelectDateDialogFragment.newInstance();
+    				 dialog.setListener((SelectDateDialog) GraphCategories.GraphCategoriesFragment.this);
+    				 dialog.show(getSherlockActivity().getSupportFragmentManager(), "SelectDateDialog");
+				}
+			});
+        	
+        	layout.addView(mButton);
         	double income = 0;
         	/* used to get colors */
         	int colorIndex = 0;
@@ -102,6 +131,7 @@ public class GraphCategories extends SherlockFragmentActivity {
         	
         	CategorySeries series = new CategorySeries("Chart");
         	DefaultRenderer render = new DefaultRenderer();
+        	
         	ArrayList<StringValuePair> expensesValues = new ArrayList<StringValuePair>();
         	
         	// get categories
@@ -118,6 +148,11 @@ public class GraphCategories extends SherlockFragmentActivity {
             	filter.reset();
             	selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_BOOKING_TYPE + "=?", "" + 1);
             	selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_CATEGORY_TYPE + "=?", "" + categoryId);
+            	// if there is a filter, attach the arguments
+            	if(mDateValuesFilter != null) {
+	            	selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + ">=?", "" + mDateValuesFilter.getValue1());
+	    			selectionMap.put(DailyTables.TABLE_RECORDS_COLUMN_UNIX_DATE + "<=?", ""+  mDateValuesFilter.getValue2());
+            	}
             	filter.set(selectionMap);
             	
             	select = filter.getSelection();
@@ -149,11 +184,43 @@ public class GraphCategories extends SherlockFragmentActivity {
     		render.setLabelsTextSize(26);
     		render.setLabelsColor(Color.BLACK);
     		render.setLegendTextSize(26);
-        	v = ChartFactory.getPieChartView(getActivity(), series, render);
+        	mChartView = ChartFactory.getPieChartView(getActivity(), series, render);
         	//layout.removeAllViews();
-        	layout.addView(v);
+        	layout.addView(mChartView);
         	
             return layout;
         }
+
+		@Override
+		public void onSelectDateDialogPositiveClick(ValuePair dates) {
+			// set filter
+			mDateValuesFilter = dates;
+			if (mChartView != null) { 
+				
+			
+
+			}
+			if(mChartView != null) {
+				/* something like this to refresh the chart:
+				layout.removeView(mChartView);
+				mChartView.repaint(); 
+				layout.addView(mChartView);// to refresh the graph*/
+			}
+		}
+
+		@Override
+		public void onSelectDateDialogDialogNeutralClick() {
+			// invalid filter
+			mDateValuesFilter = null;
+			if(mChartView != null) {
+				mChartView.repaint();
+			}
+		}
+
+		@Override
+		public void onSelectDateDialogNegativeClick() {
+			// TODO Auto-generated method stub
+			
+		}
     }
 }

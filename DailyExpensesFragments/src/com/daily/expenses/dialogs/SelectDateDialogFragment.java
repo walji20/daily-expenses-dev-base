@@ -1,30 +1,17 @@
 package com.daily.expenses.dialogs;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.LayoutInflater.Filter;
 import android.widget.DatePicker;
 
 import com.daily.expenses.R;
-import com.daily.expenses.RecordListFragment;
-import com.daily.expenses.contentprovider.DailyContentProvider;
-import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.util.Clockwork;
-import com.daily.expenses.util.Maps;
-import com.daily.expenses.util.RecordFilter;
 import com.daily.expenses.util.ValuePair;
 
 public class SelectDateDialogFragment extends DialogFragment {
@@ -87,7 +74,7 @@ public class SelectDateDialogFragment extends DialogFragment {
 				Log.d("", "Dialog confirmed");
 				
 				long from = Clockwork.getMillis(mDatePickerFrom);
-	        	long to = Clockwork.getMillis(mDatePickerFrom);
+	        	long to = Clockwork.getMillis(mDatePickerTo);
 				ValuePair dates = Clockwork.getMaximumRange(Clockwork.DAY, from, to);
 				
 	        	mListener.onSelectDateDialogPositiveClick(dates);

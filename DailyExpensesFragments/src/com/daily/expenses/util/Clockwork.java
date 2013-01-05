@@ -62,7 +62,7 @@ public class Clockwork {
 		long unixTsFrom;
 		long unixTsTo;
 		
-		if(rangeType >= MONTH) {
+		if(rangeType == MONTH) {
 			Log.d(TAG, "in: rangeType: create range to month");
     	}
 		
@@ -71,7 +71,7 @@ public class Clockwork {
 		
 		// Set the maximum range
 		Calendar gcFrom = GregorianCalendar.getInstance();
-		gcFrom.setTimeInMillis(unixTmsTo);
+		gcFrom.setTimeInMillis(unixTmsFrom);
 		gcFrom.set(GregorianCalendar.SECOND, gcFrom.getActualMinimum(GregorianCalendar.SECOND));
 		gcFrom.set(GregorianCalendar.MINUTE, gcFrom.getActualMinimum(GregorianCalendar.MINUTE));
 		gcFrom.set(GregorianCalendar.HOUR_OF_DAY, gcFrom.getActualMinimum(GregorianCalendar.HOUR_OF_DAY));
