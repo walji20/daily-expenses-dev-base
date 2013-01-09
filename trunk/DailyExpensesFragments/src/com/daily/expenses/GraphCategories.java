@@ -4,6 +4,7 @@ package com.daily.expenses;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -64,6 +65,7 @@ public class GraphCategories extends SherlockFragmentActivity {
 	int mNum;
 	private ValuePair mDateValuesFilter = null;
 	private GraphicalView mChartView;
+	private LinearLayout layout;
 
     /**
 	* Create a new instance of CountingFragment, providing "num"
@@ -106,7 +108,7 @@ public class GraphCategories extends SherlockFragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             //View mChartView = inflater.inflate(R.layout.hello_world, container, false);
-        	LinearLayout layout = new LinearLayout(getActivity());
+        	layout = new LinearLayout(getActivity());
         	Button mButton = new Button(getSherlockActivity());
         	mButton.setText("Filter");
         	mButton.setOnClickListener( new View.OnClickListener() {
@@ -120,9 +122,53 @@ public class GraphCategories extends SherlockFragmentActivity {
 			});
         	
         	layout.addView(mButton);
-        	double income = 0;
-        	/* used to get colors */
-        	int colorIndex = 0;
+        	
+        	refresh();
+        	
+        	return layout;
+        }
+        
+        private void refresh() {
+        	
+			//something like this to refresh the chart:
+			if(layout != null) {
+				if( mChartView != null ) {
+					mChartView.invalidate();
+					layout.removeView(mChartView);
+				}
+				layout.addView( getRenderedChart() );// to refresh the graph
+			} 
+		}
+
+		private View getRenderedChart() {
+        	DefaultRenderer render = new DefaultRenderer();
+        	
+        	CategorySeries incomeSeries = getDataSet();
+        	
+        	for (int i = 0; i < incomeSeries.getItemCount(); i++) {
+        		SimpleSeriesRenderer incomeSeriesRenderer = new SimpleSeriesRenderer();
+        		incomeSeriesRenderer.setColor( GraphsHelper.getColorCode( i ) );
+        		render.addSeriesRenderer(incomeSeriesRenderer);
+			}
+        	
+        	render.setInScroll(true);
+          	render.setPanEnabled(true);
+          	render.setClickEnabled(false);
+          	render.setChartTitleTextSize(26);
+            render.setShowLabels(true);
+    		render.setShowLegend(true);
+    		render.setShowGrid(true);
+    		render.setBackgroundColor(Color.BLACK);
+    		render.setLabelsTextSize(26);
+    		render.setLabelsColor(Color.BLACK);
+    		render.setLegendTextSize(26);
+    		render.setZoomButtonsVisible(true);
+        	mChartView = ChartFactory.getPieChartView(getActivity(), getDataSet(), render);
+        	
+            return mChartView;
+		}
+
+		public CategorySeries getDataSet() {
         	String select;
         	String[] selectArgs;
         	
@@ -130,7 +176,7 @@ public class GraphCategories extends SherlockFragmentActivity {
         	String[] categoryProjection = { DailyTables.TABLE_CATEGORIES_COLUMN_ID, DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
         	
         	CategorySeries series = new CategorySeries("Chart");
-        	DefaultRenderer render = new DefaultRenderer();
+
         	
         	ArrayList<StringValuePair> expensesValues = new ArrayList<StringValuePair>();
         	
@@ -138,7 +184,6 @@ public class GraphCategories extends SherlockFragmentActivity {
         	Cursor categoryCursor = getSherlockActivity().getContentResolver().query(DailyContentProvider.CATEGORIES_CONTENT_URI, categoryProjection, null, null, null);
         	for (boolean hasItem = categoryCursor.moveToFirst(); hasItem; hasItem = categoryCursor.moveToNext()) {
         		double expenses = 0;
-        		colorIndex++;
         		String categoryTitle = categoryCursor.getString(categoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_TITLE));
         	    long categoryId = categoryCursor.getLong(categoryCursor.getColumnIndexOrThrow(DailyTables.TABLE_CATEGORIES_COLUMN_ID));
         	   
@@ -167,45 +212,18 @@ public class GraphCategories extends SherlockFragmentActivity {
             		expensesValues.add(new StringValuePair( recordTitle, recordAmount ));
             		expenses += recordAmount;
             	}
-            	SimpleSeriesRenderer incomeSeriesRenderer = new SimpleSeriesRenderer();
-            	 incomeSeriesRenderer.setColor( GraphsHelper.getColorCode( colorIndex ) );
-            	 render.addSeriesRenderer(incomeSeriesRenderer);
-            	series.add(categoryTitle + ": " + expenses, expenses);
+            	 series.add(categoryTitle + ": " + expenses, expenses);
 			}
-        	
-        	render.setInScroll(true);
-          	render.setPanEnabled(true);
-          	render.setClickEnabled(false);
-          	render.setChartTitleTextSize(26);
-            render.setShowLabels(true);
-    		render.setShowLegend(true);
-    		render.setShowGrid(true);
-    		render.setBackgroundColor(Color.BLACK);
-    		render.setLabelsTextSize(26);
-    		render.setLabelsColor(Color.BLACK);
-    		render.setLegendTextSize(26);
-        	mChartView = ChartFactory.getPieChartView(getActivity(), series, render);
-        	//layout.removeAllViews();
-        	layout.addView(mChartView);
-        	
-            return layout;
+			return series;
         }
 
 		@Override
 		public void onSelectDateDialogPositiveClick(ValuePair dates) {
 			// set filter
 			mDateValuesFilter = dates;
-			if (mChartView != null) { 
-				
-			
-
-			}
-			if(mChartView != null) {
-				/* something like this to refresh the chart:
-				layout.removeView(mChartView);
-				mChartView.repaint(); 
-				layout.addView(mChartView);// to refresh the graph*/
-			}
+//			if(mChartView != null) {
+				refresh();
+//			}
 		}
 
 		@Override
