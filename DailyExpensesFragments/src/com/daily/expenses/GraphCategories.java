@@ -212,6 +212,7 @@ public class GraphCategories extends SherlockFragmentActivity {
             		expensesValues.add(new StringValuePair( recordTitle, recordAmount ));
             		expenses += recordAmount;
             	}
+                 expensesRecords.close();
             	 series.add(categoryTitle + ": " + expenses, expenses);
 			}
 			return series;
@@ -221,18 +222,14 @@ public class GraphCategories extends SherlockFragmentActivity {
 		public void onSelectDateDialogPositiveClick(ValuePair dates) {
 			// set filter
 			mDateValuesFilter = dates;
-//			if(mChartView != null) {
 				refresh();
-//			}
 		}
 
 		@Override
 		public void onSelectDateDialogDialogNeutralClick() {
 			// invalid filter
 			mDateValuesFilter = null;
-			if(mChartView != null) {
-				mChartView.repaint();
-			}
+				refresh();
 		}
 
 		@Override
