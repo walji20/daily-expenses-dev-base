@@ -6,5 +6,7 @@
     <dimen name="shadow_width">25dp</dimen>
 
     <integer name="num_cols">1</integer>
+    <dimen name="row_height">52dp</dimen>
+    <dimen name="row_width">52dp</dimen>
 
 </resources>

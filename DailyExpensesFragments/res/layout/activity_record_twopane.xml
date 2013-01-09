@@ -17,14 +17,17 @@
 
     For more on layout aliases, see:
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+
     
     -->
 
-    <TextView
-        android:layout_width="4dp"
+   
+    <ImageView 
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center_vertical"
-        android:text="x" />
+        android:text="x"
+        android:src="@drawable/arrow"/>
 
     <fragment
         android:id="@+id/record_list"
