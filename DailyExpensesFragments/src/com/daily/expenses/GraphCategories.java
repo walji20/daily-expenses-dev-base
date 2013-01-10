@@ -2,11 +2,7 @@ package com.daily.expenses;
 
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -16,17 +12,14 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import android.database.Cursor;
 import android.graphics.Color;
-import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -35,7 +28,6 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
 import com.daily.expenses.dialogs.SelectDateDialogFragment.SelectDateDialog;
-import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.GraphsHelper;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
@@ -43,29 +35,31 @@ import com.daily.expenses.util.StringValuePair;
 import com.daily.expenses.util.ValuePair;
 
 public class GraphCategories extends SherlockFragmentActivity {
-
+	GraphCategoriesFragment mCategoriesFragment;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         //TODO: setTheme(SampleList.THEME); //Used for theme switching in samples
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_graph_month);
+        setContentView(R.layout.fragment_graph_categories);
         
 
         if (savedInstanceState == null) {
             // Do first time initialization -- add initial fragment.
-            Fragment newFragment = GraphCategoriesFragment.newInstance(1);
+            mCategoriesFragment = GraphCategoriesFragment.newInstance(1);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.simple_fragment, newFragment).commit();
+            ft.add(R.id.fragment_graph_categories, mCategoriesFragment).commit();
         } else {
             //mStackLevel = savedInstanceState.getInt("level");
         }
     }
-
+	
+	
+	
 	public static class GraphCategoriesFragment extends SherlockFragment implements SelectDateDialogFragment.SelectDateDialog {
 	int mNum;
+	Button FilterButton;
 	private ValuePair mDateValuesFilter = null;
-	private GraphicalView mChartView;
-	private LinearLayout layout;
 
     /**
 	* Create a new instance of CountingFragment, providing "num"
@@ -81,7 +75,13 @@ public class GraphCategories extends SherlockFragmentActivity {
 
             return f;
         }
-
+        @Override
+        public void onResume() {
+        	super.onResume();
+			drawChart();
+        };
+        
+	
         /**
 		* When creating, retrieve this instance's number from its arguments.
 		*/
@@ -107,41 +107,30 @@ public class GraphCategories extends SherlockFragmentActivity {
 		*/
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            //View mChartView = inflater.inflate(R.layout.hello_world, container, false);
-        	layout = new LinearLayout(getActivity());
-        	Button mButton = new Button(getSherlockActivity());
-        	mButton.setText("Filter");
-        	mButton.setOnClickListener( new View.OnClickListener() {
+        	View view = inflater.inflate(R.layout.fragment_graph_categories, container, false);
+        	FilterButton = (Button) view.findViewById(R.id.button_filter);
+        	FilterButton.setOnClickListener( new View.OnClickListener() {
         		@Override
         		public void onClick(View v) {
-					
         			 SelectDateDialogFragment dialog = SelectDateDialogFragment.newInstance();
     				 dialog.setListener((SelectDateDialog) GraphCategories.GraphCategoriesFragment.this);
     				 dialog.show(getSherlockActivity().getSupportFragmentManager(), "SelectDateDialog");
 				}
 			});
-        	
-        	layout.addView(mButton);
-        	
-        	refresh();
-        	
-        	return layout;
+			
+    	   return view;
         }
         
-        private void refresh() {
-        	
-			//something like this to refresh the chart:
-			if(layout != null) {
-				if( mChartView != null ) {
-					mChartView.invalidate();
-					layout.removeView(mChartView);
-				}
-				layout.addView( getRenderedChart() );// to refresh the graph
-			} 
+		public void onFilterClicked(View v) {
+			
+			 SelectDateDialogFragment dialog = SelectDateDialogFragment.newInstance();
+			 dialog.setListener((SelectDateDialog) GraphCategories.GraphCategoriesFragment.this);
+			 dialog.show(getSherlockActivity().getSupportFragmentManager(), "SelectDateDialog");
 		}
-
-		private View getRenderedChart() {
-        	DefaultRenderer render = new DefaultRenderer();
+		
+		
+		private void drawChart() {
+			DefaultRenderer render = new DefaultRenderer();
         	
         	CategorySeries incomeSeries = getDataSet();
         	
@@ -163,11 +152,16 @@ public class GraphCategories extends SherlockFragmentActivity {
     		render.setLabelsColor(Color.BLACK);
     		render.setLegendTextSize(26);
     		render.setZoomButtonsVisible(true);
-        	mChartView = ChartFactory.getPieChartView(getActivity(), getDataSet(), render);
-        	
-            return mChartView;
-		}
+    		
+		   GraphicalView chartView;
+    		  
+		   chartView = ChartFactory.getPieChartView(getActivity(), getDataSet(), render);
 
+			LinearLayout layout = (LinearLayout) getActivity().findViewById(R.id.dashboard_chart_layout);	
+			layout.removeAllViews();
+			layout.addView(chartView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT));
+		}
+		
 		public CategorySeries getDataSet() {
         	String select;
         	String[] selectArgs;
@@ -176,7 +170,6 @@ public class GraphCategories extends SherlockFragmentActivity {
         	String[] categoryProjection = { DailyTables.TABLE_CATEGORIES_COLUMN_ID, DailyTables.TABLE_CATEGORIES_COLUMN_TITLE };
         	
         	CategorySeries series = new CategorySeries("Chart");
-
         	
         	ArrayList<StringValuePair> expensesValues = new ArrayList<StringValuePair>();
         	
@@ -222,14 +215,14 @@ public class GraphCategories extends SherlockFragmentActivity {
 		public void onSelectDateDialogPositiveClick(ValuePair dates) {
 			// set filter
 			mDateValuesFilter = dates;
-				refresh();
+			drawChart();
 		}
 
 		@Override
 		public void onSelectDateDialogDialogNeutralClick() {
 			// invalid filter
 			mDateValuesFilter = null;
-				refresh();
+			drawChart();
 		}
 
 		@Override
