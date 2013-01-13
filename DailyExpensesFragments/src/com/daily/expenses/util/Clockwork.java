@@ -1,6 +1,5 @@
 package com.daily.expenses.util;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,10 +11,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.DatePicker;
 
-import com.daily.expenses.RecordDetailActivity;
 import com.daily.expenses.database.DailyDatabaseHelper;
-import com.daily.expenses.database.DailyTables;
-import com.daily.expenses.util.LogUtils;
 /**
  * Contains helper functions for time and date related conversions 
  *

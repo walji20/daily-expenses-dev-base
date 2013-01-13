@@ -4,18 +4,14 @@ import static com.daily.expenses.util.LogUtils.LOGD;
 import static com.daily.expenses.util.LogUtils.makeLogTag;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -26,24 +22,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
-import com.daily.expenses.dialogs.EditDateDialogFragment;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
-import com.daily.expenses.dialogs.SpinnerEditCategoryDialogFragment;
-import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
 import com.daily.expenses.dialogs.SelectDateDialogFragment.SelectDateDialog;
 import com.daily.expenses.util.Clockwork;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
 import com.daily.expenses.util.ValuePair;
-import com.slidingmenu.lib.SlidingMenu;
-
-import static com.daily.expenses.util.LogUtils.*;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports

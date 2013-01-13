@@ -3,7 +3,6 @@ package com.daily.expenses.util;
 import java.util.Random;
 
 import android.graphics.Color;
-import android.util.Log;
 
 /**
  * @author No3x Provides helper functions for graphs

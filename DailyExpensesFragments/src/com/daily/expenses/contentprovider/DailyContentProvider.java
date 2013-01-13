@@ -8,6 +8,8 @@ package com.daily.expenses.contentprovider;
  *
  */
 
+import static com.daily.expenses.util.LogUtils.LOGV;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -18,19 +20,13 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.daily.expenses.database.DailyDatabaseHelper;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.util.LogUtils;
 import com.daily.expenses.util.SelectionBuilder;
-
-import static com.daily.expenses.util.LogUtils.LOGV;
-import static com.daily.expenses.util.LogUtils.LOGD;
-import static com.daily.expenses.util.LogUtils.makeLogTag;
 
 public class DailyContentProvider extends ContentProvider {
 	private static final String TAG = LogUtils.makeLogTag(DailyContentProvider.class);

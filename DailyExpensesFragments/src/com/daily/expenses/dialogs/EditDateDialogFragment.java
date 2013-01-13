@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.daily.expenses.R;
 
 public class EditDateDialogFragment extends DialogFragment {
