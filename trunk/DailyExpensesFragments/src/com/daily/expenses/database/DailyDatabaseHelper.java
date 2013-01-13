@@ -7,14 +7,12 @@ package com.daily.expenses.database;
  * @author No3x
  *
  */
-import com.daily.expenses.contentprovider.DailyContentProvider;
-import com.daily.expenses.util.LogUtils;
-
+import static com.daily.expenses.util.LogUtils.LOGD;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.daily.expenses.util.LogUtils.*;
+import com.daily.expenses.util.LogUtils;
 
 public class DailyDatabaseHelper extends SQLiteOpenHelper {
 	private static final String TAG = LogUtils.makeLogTag(DailyDatabaseHelper.class);

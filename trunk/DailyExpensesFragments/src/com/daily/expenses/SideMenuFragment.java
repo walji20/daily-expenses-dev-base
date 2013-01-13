@@ -1,27 +1,19 @@
 package com.daily.expenses;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockListFragment;
 
 public class SideMenuFragment extends SherlockListFragment {
 

@@ -1,28 +1,18 @@
 package com.daily.expenses.dialogs;
 
-import com.daily.expenses.R;
-import com.daily.expenses.RecordDetailFragment;
-import com.daily.expenses.contentprovider.DailyContentProvider;
-import com.daily.expenses.database.DailyTables;
-import com.daily.expenses.dialogs.EditDateDialogFragment.EditDateDialogListener;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.daily.expenses.R;
 
 public class SpinnerEditCategoryDialogFragment extends DialogFragment {
 	EditText mCategoryTitle;

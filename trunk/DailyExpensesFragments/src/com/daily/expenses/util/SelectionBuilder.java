@@ -24,18 +24,18 @@
 
 package com.daily.expenses.util;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
+import static com.daily.expenses.util.LogUtils.LOGV;
+import static com.daily.expenses.util.LogUtils.makeLogTag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.daily.expenses.util.LogUtils.LOGV;
-import static com.daily.expenses.util.LogUtils.makeLogTag;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 /**
  * Helper for building selection clauses for {@link SQLiteDatabase}. Each

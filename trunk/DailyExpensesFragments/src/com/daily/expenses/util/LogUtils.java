@@ -16,9 +16,6 @@
 
 package com.daily.expenses.util;
 
-import com.daily.expenses.BuildConfig;
-
-import android.R.bool;
 import android.util.Log;
 
 /**
