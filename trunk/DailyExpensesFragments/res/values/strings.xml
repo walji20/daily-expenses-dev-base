@@ -13,6 +13,13 @@
     <!-- Buttons -->
     <string name="button_filter">Filter</string>
     
+    <!-- Graph Tabs -->
+    
+    <string name="graph_tab_overview">Overview</string>
+    <string name="graph_tab_month">Month</string>
+    <string name="graph_tab_categories">Categories</string>
+    <string name="graph_tab_flow">Flow</string>
+    
     <string name="loading">Loading..</string>
     <string name="title_activity_item_insert">Insert Record</string>
     <string name="title_activity_contacts">ContactsActivity</string>

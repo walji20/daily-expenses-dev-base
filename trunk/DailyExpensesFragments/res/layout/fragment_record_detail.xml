@@ -81,7 +81,9 @@
                     android:gravity="top"
                     android:hint="Period Type"
                     android:imeOptions="actionNext"
-                    android:inputType="numberDecimal" >
+                    android:inputType="numberDecimal"
+                    android:visibility="invisible"
+                    android:text="0" >
                 </EditText>
             </LinearLayout>
 
