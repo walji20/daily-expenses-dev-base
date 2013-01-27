@@ -25,13 +25,14 @@ public class SideMenuFragment extends SherlockListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		SampleAdapter adapter = new SampleAdapter(getActivity());
-		adapter.add(new SampleItem(getActivity().getString(R.string.graphs), R.drawable.collections_sort_by_size, false));
-		adapter.add(new SampleItem(getActivity().getString(R.string.preferences), R.drawable.action_settings, true));
-		adapter.add(new SampleItem(getActivity().getString(R.string.about), R.drawable.action_about, false));
+		adapter.add(new SampleItem(getActivity().getString(R.string.graphs), R.drawable.light_collections_sort_by_size, false));
+		adapter.add(new SampleItem(getActivity().getString(R.string.preferences), R.drawable.light_action_settings, true));
+		adapter.add(new SampleItem(getActivity().getString(R.string.about), R.drawable.light_action_about, false));
 		
 		setListAdapter(adapter);
 	}
 	
+
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@SuppressWarnings("deprecation")
 	@Override
@@ -49,9 +50,14 @@ public class SideMenuFragment extends SherlockListFragment {
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		switch (position) {
-			case 0:
-			startActivity(new Intent(getActivity(), GraphsActivity.class));
-			break;
+			case 0:{
+				startActivity(new Intent(getActivity(), GraphsActivity.class));
+				break;
+			}
+			case 2: {
+				startActivity(new Intent(getActivity(), AboutActivity.class));
+				break;
+			}
 		}
 		
 	}

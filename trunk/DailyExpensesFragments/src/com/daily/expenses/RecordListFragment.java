@@ -132,7 +132,6 @@ public class RecordListFragment extends SherlockListFragment implements LoaderMa
 		/* Important, otherwise the definitions for the fragment’s onCreateOptionsMenu() and onOptionsItemSelected() methods, and optionally onPrepareOptionsMenu(), onOptionsMenuClosed(), and onDestroyOptionsMenu() methods are not called */
 		setHasOptionsMenu(true); 
 		
-		
 		if (savedInstanceState != null) {
 			
 			SelectDateDialogFragment sd = (SelectDateDialogFragment) getSherlockActivity().getSupportFragmentManager().findFragmentByTag("SelectDateDialog"); // "tag" is the string set as the tag for the dialog when you show it

@@ -10,6 +10,14 @@
     <string name="expenses">expenses</string>
     <string name="total">current balance</string>
     
+    <!-- Activity Titles -->
+	<string name="title_activity_graphs">Graphs</string>
+	<string name="title_activity_about">About</string>
+	
+    <!-- Activity About -->
+    <string name="activity_about_version">Version</string>
+    <string name="about_tex">This Application is a slim expenses tracker. It aims to be as simple as possible to provide a fast tracking.\nDeveloper: Christian Zöller\nLibraries: ActionBarSherlock</string>
+    
     <!-- Buttons -->
     <string name="button_filter">Filter</string>
     
@@ -41,7 +49,6 @@
     <string name="title_section3">Section 3</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section1">Section 1</string>
-    <string name="title_activity_graphs">Graphs</string>
     <string name="graphs">Graphs</string>
     <string name="ocr">Scan bill</string>
     <string name="preferences">Preferences</string>

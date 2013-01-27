@@ -11,8 +11,6 @@ import org.achartengine.chart.PointStyle;
 import org.achartengine.model.CategorySeries;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -33,7 +31,6 @@ import com.daily.expenses.contentprovider.DailyContentProvider;
 import com.daily.expenses.database.DailyTables;
 import com.daily.expenses.dialogs.SelectDateDialogFragment;
 import com.daily.expenses.dialogs.SelectDateDialogFragment.SelectDateDialog;
-import com.daily.expenses.util.GraphsHelper;
 import com.daily.expenses.util.Maps;
 import com.daily.expenses.util.RecordFilter;
 import com.daily.expenses.util.StringValuePair;
@@ -171,7 +168,7 @@ public class GraphFlow extends SherlockFragmentActivity {
 		    renderer.setAxesColor(Color.GRAY);
 		    renderer.setLabelsColor(Color.LTGRAY);
 		    renderer.setYLabels(10);
-		    
+		
 		    GraphicalView chartView;
 		    
 		    chartView = ChartFactory.getTimeChartView(getActivity() , buildDateDataset(titles, dates, values), renderer, "MMM yyyy");
