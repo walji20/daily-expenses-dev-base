@@ -58,6 +58,15 @@
                 android:value="com.daily.expenses.RecordListActivity" />
         </activity>
         
+        <activity
+            android:name="com.daily.expenses.AboutActivity" 
+            android:label="@string/title_activity_about"
+            android:parentActivityName="com.daily.expenses.RecordListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.daily.expenses.RecordListActivity" />
+        </activity>
+        
   		<activity android:name="org.achartengine.GraphicalActivity" />
     </application>
 

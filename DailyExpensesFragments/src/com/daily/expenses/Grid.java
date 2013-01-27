@@ -147,13 +147,13 @@ public class Grid extends Activity {
 
 	    // references to our images
 	    private Integer[] mThumbIds = {
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
-	            R.drawable.device_access_accounts, R.drawable.device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
+	            R.drawable.light_device_access_accounts, R.drawable.light_device_access_battery,
 	    };
 	}
 }

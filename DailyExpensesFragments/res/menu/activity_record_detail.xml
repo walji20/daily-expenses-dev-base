@@ -2,13 +2,13 @@
 
     <item
         android:id="@+id/menu_record_detail_save"
-        android:icon="@drawable/content_save"
+        android:icon="@drawable/light_content_save"
         android:orderInCategory="1"
         android:showAsAction="ifRoom|withText"
         android:title="@string/record_detail_save"/>
     <item
         android:id="@+id/menu_record_detail_editDate"
-        android:icon="@drawable/collections_go_to_today"
+        android:icon="@drawable/light_collections_go_to_today"
         android:orderInCategory="2"
         android:showAsAction="ifRoom|withText"
         android:title="@string/record_detail_editDate"/>
