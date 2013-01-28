@@ -10,8 +10,9 @@
     <string name="expenses">expenses</string>
     <string name="total">current balance</string>
     
-    <!-- Activity Titles -->
+    <!-- Activity Titles  -->
 	<string name="title_activity_graphs">Graphs</string>
+	<string name="title_activity_preferences">Preferences</string>
 	<string name="title_activity_about">About</string>
 	
     <!-- Activity About -->
@@ -49,9 +50,7 @@
     <string name="title_section3">Section 3</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section1">Section 1</string>
-    <string name="graphs">Graphs</string>
+   
     <string name="ocr">Scan bill</string>
-    <string name="preferences">Preferences</string>
-    <string name="about">About</string>
 
 </resources>
