@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 
 public class AboutActivity extends SherlockActivity {
-	private static final String TAG = makeLogTag(RecordDetailFragment.class);
+	private static final String TAG = makeLogTag(AboutActivity.class);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

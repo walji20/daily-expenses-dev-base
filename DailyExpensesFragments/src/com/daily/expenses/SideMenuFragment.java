@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,10 @@ public class SideMenuFragment extends SherlockListFragment {
 		switch (position) {
 			case 0:{
 				startActivity(new Intent(getActivity(), GraphsActivity.class));
+				break;
+			}
+			case 1:{
+				startActivity(new Intent(getActivity(), PreferencesActivity.class));
 				break;
 			}
 			case 2: {

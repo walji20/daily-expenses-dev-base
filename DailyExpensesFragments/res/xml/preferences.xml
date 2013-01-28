@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/pref_category_general" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="perform_updates"
+            android:summary="Enable or disable data updates"
+            android:title="Enable updates" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_category_sync" >
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_category_sync_def"
+            android:key="@string/pref_category_sync_key"
+            android:summary="@string/pref_category_sync_summary"
+            android:title="@string/pref_category_sync" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:defaultValue="@string/pref_category_sync_google_def"
+            android:dependency="@string/pref_category_sync_key"
+            android:key="@string/pref_category_sync_google_key"
+            android:summary="@string/pref_category_sync_google_summary"
+            android:title="@string/pref_category_sync_google" >
+        </CheckBoxPreference>
+    </PreferenceCategory>
+
+</PreferenceScreen>
