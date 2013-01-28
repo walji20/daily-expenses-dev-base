@@ -25,9 +25,9 @@ public class SideMenuFragment extends SherlockListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		SampleAdapter adapter = new SampleAdapter(getActivity());
-		adapter.add(new SampleItem(getActivity().getString(R.string.graphs), R.drawable.light_collections_sort_by_size, false));
-		adapter.add(new SampleItem(getActivity().getString(R.string.preferences), R.drawable.light_action_settings, true));
-		adapter.add(new SampleItem(getActivity().getString(R.string.about), R.drawable.light_action_about, false));
+		adapter.add(new SampleItem(getActivity().getString(R.string.title_activity_graphs), R.drawable.light_collections_sort_by_size, false));
+		adapter.add(new SampleItem(getActivity().getString(R.string.title_activity_preferences), R.drawable.light_action_settings, true));
+		adapter.add(new SampleItem(getActivity().getString(R.string.title_activity_about), R.drawable.light_action_about, false));
 		
 		setListAdapter(adapter);
 	}
