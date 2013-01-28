@@ -10,6 +10,18 @@
     <string name="expenses">expenses</string>
     <string name="total">current balance</string>
     
+    <!-- Preferences -->
+    <string name="pref_category_general">General Settings</string>
+    <string name="pref_category_sync">Synchronization Settings</string>
+    <string name="pref_category_sync_key">sync_enabled</string>
+    <string name="pref_category_sync_summary">enable sync</string>
+    <string name="pref_category_sync_def">true</string>
+    
+     <string name="pref_category_sync_google">Google</string>
+    <string name="pref_category_sync_google_key">sync_google_enabled</string>
+    <string name="pref_category_sync_google_summary">Sync with google.</string>
+    <string name="pref_category_sync_google_def">true</string>
+
     <!-- Activity Titles  -->
 	<string name="title_activity_graphs">Graphs</string>
 	<string name="title_activity_preferences">Preferences</string>
